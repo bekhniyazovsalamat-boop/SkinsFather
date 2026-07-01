@@ -5,360 +5,345 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SkinsFather Web App</title>
     <style>
-        /* CS2 To'q va zamonaviy UI dizayni */
+        /* Asosiy fon: Qorong'u, zamonaviy gradient */
         body {
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            background-color: #0b0e14;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: radial-gradient(circle at top, #1b2838 0%, #0b0e14 100%);
             color: #ffffff;
             margin: 0;
             padding: 15px;
             text-align: center;
             -webkit-user-select: none;
+            min-height: 100vh;
         }
 
-        /* Yuqori qism: Balans va Status */
+        /* Tepa qism: Faqat Balans va Logotip */
         .header-status {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            background: #121721;
-            padding: 12px 16px;
-            border-radius: 14px;
-            margin-bottom: 20px;
+            background: rgba(18, 23, 33, 0.7);
+            padding: 15px 20px;
+            border-radius: 12px;
+            margin-bottom: 25px;
             border: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
         }
 
-        .online-count {
-            color: #00ff88;
-            font-size: 14px;
-            font-weight: bold;
-            display: flex;
-            align-items: center;
-            gap: 5px;
+        .logo-text {
+            font-size: 18px;
+            font-weight: 900;
+            letter-spacing: 1px;
+            background: linear-gradient(90deg, #ff9500, #ffcc00);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
 
         .balance-badge {
-            background: #1c2430;
-            padding: 6px 14px;
+            background: #151a24;
+            padding: 8px 18px;
             border-radius: 20px;
             font-weight: bold;
-            color: #ffd700;
-            border: 1px solid #313d4f;
-        }
-
-        /* RULeTKA / CASE AYLANISH HUDUDI */
-        .case-zone {
-            background: #121721;
-            padding: 20px;
-            border-radius: 16px;
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            margin-bottom: 20px;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .case-title {
             font-size: 16px;
-            font-weight: bold;
-            margin-bottom: 15px;
-            color: #a3b1c6;
+            color: #ffd700;
+            border: 1px solid #2a3441;
+            box-shadow: inset 0 0 10px rgba(255, 215, 0, 0.1);
         }
 
-        /* G'ildirak vizuali */
+        /* HAQIQIY RULETKA HUDUDI */
+        .case-zone {
+            margin-bottom: 30px;
+        }
+
         .roulette-container {
             position: relative;
             width: 100%;
-            height: 95px;
-            background: #080b0f;
-            border-radius: 12px;
+            height: 130px;
+            background: #0f141d;
+            border-radius: 10px;
             border: 2px solid #1c2430;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 15px;
+            overflow: hidden; /* Tashqariga chiqqan skinlarni yashiradi */
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.8);
+            margin-bottom: 20px;
         }
 
-        /* Markazdagi qizil chiziq (CS2 dagi kabi chiziq) */
+        /* O'rtadagi qizil chiziq (Ko'rsatgich) */
         .pointer {
             position: absolute;
+            left: 50%;
             top: 0;
             bottom: 0;
-            width: 4px;
-            background: #ff3b30;
+            width: 3px;
+            background: #ffcc00;
+            transform: translateX(-50%);
             z-index: 10;
-            box-shadow: 0 0 10px #ff3b30;
+            box-shadow: 0 0 15px #ffcc00, 0 0 5px #ffffff;
         }
 
-        .display-box {
-            font-size: 32px;
+        /* Skinlar aylanadigan lenta */
+        .roulette-track {
+            display: flex;
+            height: 100%;
+            width: max-content;
+            /* Animatsiya JS orqali qo'shiladi */
+        }
+
+        /* Har bir skin kartasi */
+        .skin-card {
+            width: 110px;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            border-right: 1px solid rgba(255,255,255,0.05);
+            position: relative;
+            background: linear-gradient(to bottom, rgba(255,255,255,0.02) 0%, rgba(0,0,0,0.5) 100%);
+        }
+
+        /* Pastdagi rangli rarity (nodirlik) chizig'i */
+        .skin-card::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: var(--color);
+            box-shadow: 0 -2px 10px var(--color);
+        }
+
+        .skin-emoji {
+            font-size: 45px;
+            filter: drop-shadow(0 5px 5px rgba(0,0,0,0.5));
             margin-bottom: 5px;
         }
 
-        .skin-name-display {
-            font-size: 14px;
-            font-weight: bold;
-            color: #ffd700;
-            height: 18px;
+        .skin-name {
+            font-size: 11px;
+            color: #a3b1c6;
+            font-weight: 600;
+            text-align: center;
+            padding: 0 5px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            width: 90%;
         }
 
+        /* Tugma dizayni */
         .open-btn {
-            background: linear-gradient(135deg, #ff9500, #ff5e00);
+            background: linear-gradient(135deg, #00c6ff, #0072ff);
             color: white;
             border: none;
-            padding: 12px 30px;
-            border-radius: 25px;
+            padding: 15px 40px;
+            border-radius: 30px;
             font-size: 16px;
-            font-weight: bold;
+            font-weight: 900;
+            letter-spacing: 1px;
             cursor: pointer;
-            width: 80%;
-            box-shadow: 0 5px 15px rgba(255, 94, 0, 0.3);
-            transition: 0.2s;
+            box-shadow: 0 5px 20px rgba(0, 114, 255, 0.4);
+            transition: all 0.2s;
+            text-transform: uppercase;
         }
 
         .open-btn:active {
             transform: scale(0.95);
+            box-shadow: 0 2px 10px rgba(0, 114, 255, 0.4);
         }
 
-        /* INVENTAR (Yutib olingan skinlar saqlanadigan joy) */
+        .open-btn:disabled {
+            background: #2a3441;
+            color: #5a6b82;
+            box-shadow: none;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* INVENTAR */
         .inventory-zone {
-            background: #121721;
+            background: rgba(18, 23, 33, 0.7);
             padding: 15px;
-            border-radius: 16px;
+            border-radius: 12px;
             border: 1px solid rgba(255, 255, 255, 0.05);
-            margin-bottom: 20px;
             text-align: left;
         }
 
         .section-title {
             font-size: 16px;
             font-weight: bold;
-            margin-bottom: 12px;
-            color: #a3b1c6;
+            margin-bottom: 15px;
+            color: #ffffff;
             display: flex;
             justify-content: space-between;
         }
 
         .inventory-grid {
             display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 8px;
-            max-height: 180px;
+            grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
+            gap: 10px;
+            max-height: 200px;
             overflow-y: auto;
         }
 
-        .inventory-item {
-            background: #1c2430;
+        .inv-item {
+            background: #151a24;
             aspect-ratio: 1;
             border-radius: 8px;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            font-size: 20px;
             position: relative;
-            border-bottom: 3px solid #8e44ad;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
         }
 
-        .empty-text {
-            grid-column: span 4;
-            text-align: center;
-            color: #4f5d73;
-            font-size: 13px;
-            padding: 20px 0;
-        }
-
-        /* TOPSHIRIQLAR (ЗАДАНИЯ) KISMI */
-        .tasks-zone {
-            background: #121721;
-            padding: 15px;
-            border-radius: 16px;
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            text-align: left;
-        }
-
-        .task-list {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        .task-item {
-            background: #1c2430;
-            padding: 12px;
-            border-radius: 10px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .task-info h4 {
-            margin: 0 0 4px 0;
-            font-size: 14px;
-        }
-
-        .task-info p {
-            margin: 0;
-            font-size: 11px;
-            color: #7e8b9b;
-        }
-
-        .task-btn {
-            background: #007bff;
-            color: white;
-            border: none;
-            padding: 6px 12px;
-            border-radius: 15px;
-            font-size: 12px;
-            font-weight: bold;
-            cursor: pointer;
-        }
-
-        .task-btn.claimed {
-            background: #28a745;
-            cursor: default;
+        .inv-item::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: var(--color);
+            border-radius: 0 0 8px 8px;
         }
     </style>
 </head>
 <body>
 
+    <!-- 1. Tepa qism (Balans) -->
     <div class="header-status">
-        <div class="online-count">● online 1,439</div>
-        <div class="balance-badge">🪙 <span id="balance">110</span></div>
+        <div class="logo-text">SKINSFATHER</div>
+        <div class="balance-badge">🪙 <span id="balance">150</span></div>
     </div>
 
+    <!-- 2. HAQIQIY RULETKA HUDUDI -->
     <div class="case-zone">
-        <div class="case-title">🔥 ARZON CASE (Narxi: 30 🪙)</div>
-        <div class="roulette-container">
+        <div class="roulette-container" id="roulette-container">
             <div class="pointer"></div>
-            <div>
-                <div class="display-box" id="roulette-emoji">🎁</div>
-                <div class="skin-name-display" id="skin-name">Нажми кнопку👇</div>
+            <!-- Skinlar lentasi shu yerda harakatlanadi -->
+            <div class="roulette-track" id="roulette-track">
+                <!-- Boshlang'ich ko'rinish uchun bitta oddiy yozuv -->
+                <div style="width: 100%; display:flex; justify-content:center; align-items:center; color: #5a6b82; font-weight:bold; font-size:14px; position:absolute;">
+                    Нажмите "ОТКРЫТЬ CASE"
+                </div>
             </div>
         </div>
-        <button class="open-btn" id="open-button" onclick="spinCase()">ОТКРЫТЬ CASE</button>
+        <button class="open-btn" id="open-button" onclick="spinCase()">ОТКРЫТЬ ЗА 30 🪙</button>
     </div>
 
+    <!-- 3. INVENTAR -->
     <div class="inventory-zone">
         <div class="section-title">
             <span>🎒 Мой Инвентарь</span>
-            <span style="font-size: 12px; color: #7e8b9b;" id="inv-count">0 предметов</span>
+            <span style="font-size: 12px; color: #7e8b9b;" id="inv-count">0 шт</span>
         </div>
         <div class="inventory-grid" id="inventory">
-            <div class="empty-text" id="empty-hint">Инвентарь пуст. Откройте кейс!</div>
-        </div>
-    </div>
-
-    <div class="tasks-zone">
-        <div class="section-title">📋 Задания</div>
-        <div class="task-list">
-            <div class="task-item">
-                <div class="task-info">
-                    <h4>Имя бота в фамилии</h4>
-                    <p>+50 монет</p>
-                </div>
-                <button class="task-btn" id="task1" onclick="completeTask('task1', 50)">+50</button>
-            </div>
-            <div class="task-item">
-                <div class="task-info">
-                    <h4>Реф. ссылка в описании</h4>
-                    <p>+20 монет</p>
-                </div>
-                <button class="task-btn" id="task2" onclick="completeTask('task2', 20)">+20</button>
-            </div>
+            <!-- Yutqazilgan narsalar shu yerga tushadi -->
         </div>
     </div>
 
     <script>
-        // O'yin ichidagi ma'lumotlarni saqlash (Siz aytgan tizim)
-        let balance = 110;
-        let inventory = [];
+        let balance = 150;
+        let isSpinning = false;
 
-        // CS2 Skinlar to'plami
+        // CS2 Skinlari (Haqiqiy ranglari bilan)
         const skinsPool = [
-            { name: "Glock-18 | Bunsen", emoji: "🔫", color: "#4b69ff" },
-            { name: "M4A1-S | Decimator", emoji: "⚡", color: "#8847ff" },
-            { name: "AK-47 | Redline", emoji: "🔥", color: "#d32ce6" },
-            { name: "AWP | Asiimov", emoji: "🎯", color: "#eb4b4b" },
-            { name: "Karambit | Fade 🔪", emoji: "✨", color: "#e4ae39" }
+            { name: "Glock | Bunsen", emoji: "🔫", color: "#4b69ff" },    // Mil-Spec (Ko'k) - Arzon
+            { name: "M4A1-S | Decim", emoji: "⚡", color: "#8847ff" },    // Restricted (Binafsha)
+            { name: "AK-47 | Redline", emoji: "🔥", color: "#d32ce6" },   // Classified (Pushti)
+            { name: "AWP | Asiimov", emoji: "🎯", color: "#eb4b4b" },     // Covert (Qizil) - Qimmat
+            { name: "Karambit 🔪", emoji: "✨", color: "#e4ae39" }       // Gold (Sariq) - Pichoq!
         ];
 
-        // 1. TUGMALAR ISHLASHI: Topshiriqni bajarish va tanga olish
-        function completeTask(taskId, reward) {
-            const btn = document.getElementById(taskId);
-            if (!btn.classList.contains('claimed')) {
-                balance += reward;
-                document.getElementById('balance').innerText = balance;
-                btn.innerText = "Взято ✔";
-                btn.classList.add('claimed');
-                btn.style.background = "#28a745";
-            }
-        }
-
-        // 2. CASE AYLANTIRISH VIZUAL EFFEKTI
         function spinCase() {
+            if (isSpinning) return;
             if (balance < 30) {
-                alert("Недостаточно монет! Выполните задания.");
+                alert("Недостаточно монет!");
                 return;
             }
 
-            // Pulni yechish
+            // Balansni ayirish
             balance -= 30;
             document.getElementById('balance').innerText = balance;
             
+            isSpinning = true;
             const openBtn = document.getElementById('open-button');
             openBtn.disabled = true;
-            openBtn.innerText = "Крутится...";
+            openBtn.innerText = "КРУТИТСЯ...";
 
-            let ticks = 0;
-            const duration = 15; // aylanish tezligi va vaqti
+            const track = document.getElementById('roulette-track');
+            const container = document.getElementById('roulette-container');
             
-            // Xuddi CS2 degi kabi miltillash effekti
-            const interval = setInterval(() => {
-                const randomSkin = skinsPool[Math.floor(Math.random() * skinsPool.length)];
-                document.getElementById('roulette-emoji').innerText = randomSkin.emoji;
-                document.getElementById('skin-name').innerText = randomSkin.name;
-                document.getElementById('skin-name').style.color = randomSkin.color;
-                
-                ticks++;
-                if (ticks >= duration) {
-                    clearInterval(interval);
-                    
-                    // Yakuniy yutuqni aniqlash
-                    const finalSkin = skinsPool[Math.floor(Math.random() * skinsPool.length)];
-                    document.getElementById('roulette-emoji').innerText = finalSkin.emoji;
-                    document.getElementById('skin-name').innerText = finalSkin.name;
-                    document.getElementById('skin-name').style.color = finalSkin.color;
-                    
-                    // 3. SKINLARNI INVENTARGA QO'SHISH TIZIMI
-                    addSkinToInventory(finalSkin);
+            // Lentani tozalash va animatsiyani o'chirish (boshiga qaytish uchun)
+            track.style.transition = 'none';
+            track.style.transform = 'translateX(0)';
+            track.innerHTML = '';
 
-                    openBtn.disabled = false;
-                    openBtn.innerText = "ОТКРЫТЬ CASE";
-                }
-            }, 100);
+            // 60 ta tasodifiy skin yaratib, lentaga tizib chiqamiz
+            const totalItems = 60;
+            const winnerIndex = 52; // Yutgan skin qatorda 52-o'rinda turadi
+            let winnerSkin;
+
+            for (let i = 0; i < totalItems; i++) {
+                // Tasodifiy skin tanlash (qimmatlari kamroq tushishi uchun ehtimollikni qila olamiz, hozir oddiy random)
+                let randomSkin = skinsPool[Math.floor(Math.random() * skinsPool.length)];
+                if (i === winnerIndex) winnerSkin = randomSkin;
+
+                let card = document.createElement('div');
+                card.className = 'skin-card';
+                card.style.setProperty('--color', randomSkin.color);
+                card.innerHTML = `
+                    <div class="skin-emoji">${randomSkin.emoji}</div>
+                    <div class="skin-name">${randomSkin.name}</div>
+                `;
+                track.appendChild(card);
+            }
+
+            // Brauzerga o'zgarishlarni darhol hisoblatish
+            track.offsetWidth;
+
+            // Ruletkani to'g'ri nuqtaga surish matematikasi:
+            const cardWidth = 110; // CSS dagi width bilan bir xil
+            const containerWidth = container.offsetWidth;
+            
+            // 52-karta markazda turishi uchun kerakli masofa:
+            let targetX = (winnerIndex * cardWidth) - (containerWidth / 2) + (cardWidth / 2);
+            
+            // Salgina o'ngga-chapga surilish effekti (qizil chiziq o'rtada yoki chetroqda to'xtashi uchun)
+            let randomOffset = Math.floor(Math.random() * 80) - 40;
+            targetX += randomOffset;
+
+            // Haqiqiy aylanish effekti (6 soniya davom etadi, asta-sekin to'xtaydi)
+            track.style.transition = 'transform 6s cubic-bezier(0.1, 0.1, 0.1, 1)';
+            track.style.transform = `translateX(-${targetX}px)`;
+
+            // Animatsiya tugagandan keyin
+            setTimeout(() => {
+                isSpinning = false;
+                openBtn.disabled = false;
+                openBtn.innerText = "ОТКРЫТЬ ЗА 30 🪙";
+                
+                // Skinni inventarga qo'shish
+                addSkinToInventory(winnerSkin);
+            }, 6200);
         }
 
-        // Inventarga skin qo'shish funksiyasi
         function addSkinToInventory(skin) {
-            inventory.push(skin);
-            
-            // "Pust" degan yozuvni o'chirish
-            const emptyHint = document.getElementById('empty-hint');
-            if (emptyHint) emptyHint.remove();
-
             const invGrid = document.getElementById('inventory');
             
-            // Yangi skin kvadratini yaratish
             const itemDiv = document.createElement('div');
-            itemDiv.className = 'inventory-item';
-            itemDiv.style.borderBottom = `3px solid ${skin.color}`;
-            itemDiv.innerHTML = `${skin.emoji}<span style="font-size:8px; margin-top:4px;">${skin.name.split(' | ')[0]}</span>`;
+            itemDiv.className = 'inv-item';
+            itemDiv.style.setProperty('--color', skin.color);
+            itemDiv.innerHTML = `
+                <div style="font-size: 28px;">${skin.emoji}</div>
+            `;
             
-            // Inventar tarmog'iga qo'shish
-            invGrid.appendChild(itemDiv);
+            invGrid.insertBefore(itemDiv, invGrid.firstChild); // Yangisini doim boshiga qo'shadi
             
-            // Sanoqni yangilash
-            document.getElementById('inv-count').innerText = `${inventory.length} предметов`;
+            const currentCount = invGrid.children.length;
+            document.getElementById('inv-count').innerText = `${currentCount} шт`;
         }
     </script>
 </body>
