@@ -3,531 +3,381 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SkinsFather / SkinFights</title>
+    <title>SkinFights - Official Mini App</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Rajdhani:wght@600;700&display=swap" rel="stylesheet">
-    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Rajdhani:wght@600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
         :root {
-            --bg-color: #0d1117;
-            --panel-bg: #161b22;
-            --card-bg: #21262d;
-            --accent-gold: #ffb703;
-            --accent-green: #2ea44f;
-            --text-main: #f0f6fc;
-            --text-gray: #8b949e;
-            --rarity-purple: linear-gradient(135deg, #8a2be2, #4a00e0);
+            --bg-dark: #06090e;
+            --panel-bg: #0f141c;
+            --card-bg: #151d27;
+            --accent-green: #00ff66;
+            --accent-gold: #ffb700;
+            --text-white: #ffffff;
+            --text-gray: #7e8b9b;
+            --rarity-cover: radial-gradient(circle, rgba(138,43,226,0.2) 0%, rgba(15,20,28,0) 70%);
         }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Inter', sans-serif;
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; user-select: none; }
+        body { background-color: var(--bg-dark); color: var(--text-white); padding-bottom: 90px; }
+        h1, h2, h3, .font-game { font-family: 'Rajdhani', sans-serif; text-transform: uppercase; }
 
-        body {
-            background-color: var(--bg-color);
-            color: var(--text-main);
-            padding-bottom: 90px;
-            overflow-x: hidden;
-            -webkit-tap-highlight-color: transparent;
-        }
-
-        /* Sarlavhalar uchun maxsus o'yin shrifti */
-        h1, h2, h3, .balance-amount, .case-price {
-            font-family: 'Rajdhani', sans-serif;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .page { display: none; padding: 20px 15px; }
+        /* Sahifalar boshqaruvi */
+        .page { display: none; padding: 15px; }
         .page.active { display: block; }
 
-        /* REKLAMA / BANNER (Rasm 1 dagi yuqori qism) */
-        .hero-banner {
-            text-align: center;
-            padding: 25px 15px;
-            background: linear-gradient(180deg, rgba(46, 164, 79, 0.15) 0%, rgba(13, 17, 23, 0) 100%);
-            border-radius: 20px;
-            margin-bottom: 20px;
+        /* TOP LIVE DROPS (Jonli yutuqlar lentasi) */
+        .live-drops {
+            display: flex; gap: 8px; overflow-x: auto; padding: 10px 5px;
+            scroll-behavior: smooth; border-bottom: 1px solid #1a2330; margin-bottom: 15px;
         }
-        .hero-banner h1 {
-            font-size: 32px;
-            color: var(--accent-green);
-            text-shadow: 0 0 15px rgba(46, 164, 79, 0.6);
+        .live-drops::-webkit-scrollbar { display: none; }
+        .drop-item {
+            min-width: 90px; background: var(--panel-bg); border-radius: 8px; padding: 6px;
+            text-align: center; border-bottom: 2px solid #8a2be2; font-size: 10px; position: relative;
         }
-        .hero-banner p {
-            color: var(--text-gray);
-            font-size: 13px;
-            margin-top: 5px;
+        .drop-item img { width: 45px; height: 45px; object-fit: contain; display: block; margin: 0 auto; }
+        .drop-user-badge {
+            position: absolute; top: 2px; left: 2px; width: 12px; height: 12px;
+            border-radius: 50%; background: var(--accent-gold); font-size: 8px; line-height: 12px;
         }
 
-        /* BALANS CARD */
-        .balance-box {
-            background: var(--panel-bg);
-            border: 1px solid rgba(255, 183, 3, 0.3);
-            border-radius: 16px;
-            padding: 20px;
-            text-align: center;
-            margin-bottom: 20px;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
-        }
-        .balance-title {
-            color: var(--text-gray);
-            font-size: 12px;
-            text-transform: uppercase;
-            font-weight: 600;
-        }
-        .balance-amount {
-            font-size: 38px;
-            color: var(--accent-gold);
-            margin: 8px 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-        }
+        /* LOGO & BRANDING */
+        .brand-header { text-align: center; margin: 15px 0; }
+        .brand-header h1 { font-size: 34px; color: #fff; letter-spacing: 1px; }
+        .brand-header p { color: var(--text-gray); font-size: 13px; margin-top: 2px; }
 
-        .btn-main {
-            background: var(--accent-green);
-            color: #fff;
-            border: none;
-            width: 100%;
-            padding: 14px;
-            border-radius: 12px;
-            font-weight: 700;
-            font-size: 15px;
-            cursor: pointer;
-            box-shadow: 0 4px 12px rgba(46, 164, 79, 0.3);
-            transition: 0.2s ease;
+        /* ASOSIY BALANS VA SANDIQ (Rasm 1) */
+        .hero-chest-box {
+            background: radial-gradient(circle at center, #1c2735 0%, #0f141c 100%);
+            border-radius: 20px; padding: 25px 20px; text-align: center;
+            border: 1px solid #1a2330; margin-bottom: 20px; position: relative;
         }
-        .btn-main:active { transform: scale(0.98); }
-
-        /* VAZIFALAR VA BONUS */
-        .section-box {
-            background: var(--panel-bg);
-            border-radius: 16px;
-            padding: 15px;
-            margin-bottom: 15px;
-        }
-        .section-box h3 {
-            font-size: 16px;
-            margin-bottom: 12px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .btn-bonus {
-            background: #238636;
-            color: white;
-            border: none;
-            width: 100%;
-            padding: 12px;
-            border-radius: 10px;
-            font-weight: 600;
-            cursor: pointer;
-        }
-        .btn-bonus:disabled {
-            background: #21262d;
-            color: var(--text-gray);
-            cursor: not-allowed;
-        }
-
-        .task-item {
-            background: var(--card-bg);
-            padding: 12px 15px;
-            border-radius: 10px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 14px;
-            cursor: pointer;
-        }
-
-        /* KEYSLAR RO'YXATI (Rasm 2 uchun toza skroll dizayn) */
-        .cases-title { font-size: 20px; margin-bottom: 15px; padding-left: 5px; }
-        .cases-container {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 12px;
-        }
-        .case-item {
-            background: var(--panel-bg);
-            border-radius: 14px;
-            padding: 15px;
-            text-align: center;
-            border: 1px solid #30363d;
-            position: relative;
-        }
-        /* Haqiqiy yuklanadigan 3D SVG sandiqlar (Hech qachon o'chib ketmaydi) */
-        .case-icon-svg {
-            width: 70px;
-            height: 70px;
-            margin: 10px auto;
-            display: block;
-        }
-        .case-label-new {
-            position: absolute;
-            top: 8px;
-            right: 8px;
-            background: #da3637;
-            color: white;
-            font-size: 9px;
-            font-weight: 700;
-            padding: 2px 6px;
-            border-radius: 6px;
-            text-transform: uppercase;
-        }
-        .case-title-text {
-            font-weight: 600;
-            font-size: 15px;
-            margin-top: 8px;
-        }
-        .case-meta {
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-            margin-top: 8px;
-            font-size: 12px;
-        }
-        .badge-price {
-            background: rgba(255, 183, 3, 0.1);
-            color: var(--accent-gold);
-            padding: 4px 8px;
-            border-radius: 6px;
-            font-weight: 600;
-        }
-        .badge-count {
-            background: rgba(139, 148, 158, 0.15);
-            color: var(--text-gray);
-            padding: 4px 8px;
-            border-radius: 6px;
-        }
-
-        /* KEYS ICHIDAGI SKINLAR (Rasm 3) */
-        .skins-list {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 10px;
-            margin-top: 15px;
-        }
-        .skin-item {
-            background: var(--panel-bg);
-            border-radius: 12px;
-            padding: 12px;
-            text-align: center;
-            border-bottom: 3px solid #8a2be2;
-        }
-        .skin-weapon-svg {
-            width: 65px;
-            height: 65px;
-            margin: 5px auto;
-        }
-        .skin-name { font-size: 13px; font-weight: 600; margin-top: 5px; color: #fff; }
-        .skin-condition { font-size: 10px; color: var(--text-gray); }
-
-        /* PROFIL SAHIFASI (Rasm 3 dagi xatolar to'g'rilandi) */
-        .profile-container {
-            background: var(--panel-bg);
-            border-radius: 16px;
-            padding: 20px;
-            text-align: center;
-            margin-bottom: 20px;
-        }
-        .profile-avatar-wrap {
-            width: 76px;
-            height: 76px;
-            background: var(--card-bg);
-            border-radius: 50%;
-            margin: 0 auto 12px auto;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border: 2px solid var(--accent-green);
-            overflow: hidden;
-        }
-        .profile-avatar-wrap i { font-size: 32px; color: var(--text-gray); }
-        .profile-avatar-wrap img { width: 100%; height: 100%; object-fit: cover; }
+        .hero-chest-box .lbl { font-size: 12px; color: var(--text-gray); font-weight: 600; text-transform: uppercase; }
+        .hero-balance { font-size: 42px; color: var(--accent-green); font-weight: 700; margin: 5px 0 15px 0; display: flex; justify-content: center; align-items: center; gap: 8px; }
         
-        .profile-stats {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-            margin-top: 20px;
-            border-top: 1px solid #30363d;
-            padding-top: 15px;
-        }
-        .stat-val { font-size: 24px; font-weight: 700; color: var(--accent-gold); font-family: 'Rajdhani'; }
-        .stat-lbl { font-size: 11px; color: var(--text-gray); margin-top: 2px; }
-
-        /* POPUP MODAL (TO'LOV) */
-        .modal-overlay {
-            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.85); z-index: 1000; justify-content: center; align-items: center;
-            padding: 20px;
-        }
-        .modal-body {
-            background: var(--panel-bg); border-radius: 20px; width: 100%; max-width: 340px; padding: 20px;
-            border: 1px solid #30363d; text-align: center;
-        }
-        .pay-card {
-            background: var(--card-bg); padding: 14px; margin: 10px 0; border-radius: 10px;
-            display: flex; justify-content: space-between; align-items: center; font-weight: 600; cursor: pointer;
+        .animated-chest {
+            width: 140px; height: 140px; margin: 0 auto 20px auto;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><path d="M4 24L32 12L60 24L32 36L4 24Z" fill="%2300ff66" opacity="0.3"/><path d="M4 24V48L32 58V36L4 24Z" fill="%231c2735" stroke="%2300ff66" stroke-width="2"/><path d="M60 24V48L32 58V36L60 24Z" fill="%23151d27" stroke="%2300ff66" stroke-width="2"/></svg>') no-repeat center;
+            filter: drop-shadow(0 0 20px rgba(0, 255, 102, 0.4));
         }
 
-        /* NAVIGATSIYA MENU */
-        .nav-bar {
+        .btn-green {
+            background: var(--accent-green); color: #000; border: none; width: 100%;
+            padding: 15px; border-radius: 12px; font-weight: 700; font-size: 15px; cursor: pointer; text-transform: uppercase;
+        }
+
+        /* OYIN REJIMLARI SEKSIYASI (UPGRADE, BATTLE, MARKET) */
+        .game-modes-list { display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px; }
+        .mode-banner {
+            background: linear-gradient(90deg, #151d27 0%, #0f141c 100%);
+            border-radius: 15px; padding: 20px; display: flex; justify-content: space-between;
+            align-items: center; border-left: 4px solid var(--accent-green); cursor: pointer;
+        }
+        .mode-info h3 { font-size: 18px; color: #fff; }
+        .mode-info p { color: var(--text-gray); font-size: 12px; margin-top: 4px; }
+        .mode-icon { font-size: 26px; color: var(--accent-green); opacity: 0.8; }
+
+        /* FAOL VAZIFALAR VA TAYMER (Rasm 6) */
+        .task-card { background: var(--panel-bg); border-radius: 16px; padding: 16px; margin-bottom: 12px; }
+        .task-card h4 { font-size: 14px; text-transform: uppercase; color: #fff; margin-bottom: 8px; }
+        .task-row { display: flex; justify-content: space-between; align-items: center; margin-top: 10px; }
+        
+        .timer-badge {
+            background: #1c2330; padding: 6px 12px; border-radius: 8px;
+            font-family: 'Rajdhani', sans-serif; font-size: 16px; color: var(--text-gray); font-weight: 700;
+        }
+        .btn-action {
+            background: var(--accent-green); color: #000; border: none; padding: 8px 16px;
+            border-radius: 8px; font-weight: 700; font-size: 12px; cursor: pointer; text-transform: uppercase;
+        }
+
+        /* CASE-LAR DO'KONI (Rasm 2) */
+        .grid-2x2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .case-box {
+            background: var(--panel-bg); border-radius: 14px; padding: 15px; text-align: center;
+            border: 1px solid #1a2330; position: relative;
+        }
+        .case-box .badge-new { position: absolute; top: 8px; right: 8px; background: #ff3b30; color: #fff; font-size: 9px; padding: 2px 6px; border-radius: 4px; font-weight: 700; }
+        .case-gfx { width: 75px; height: 75px; margin: 10px auto; background: #222; border-radius: 8px; position: relative; box-shadow: inset 0 0 15px rgba(255,255,255,0.05); }
+        .case-gfx::after { content: '📦'; font-size: 36px; line-height: 75px; display: block; }
+        .case-box h4 { margin-top: 10px; font-size: 15px; }
+        .case-pricing { display: flex; justify-content: center; gap: 8px; margin-top: 10px; }
+        .tag-coin { background: rgba(255,183,0,0.1); color: var(--accent-gold); padding: 4px 8px; border-radius: 6px; font-size: 11px; font-weight: 600; }
+        .tag-opened { background: rgba(255,255,255,0.05); color: var(--text-gray); padding: 4px 8px; border-radius: 6px; font-size: 11px; }
+
+        /* INVENTAR FILTRLARI (Rasm 5) */
+        .tab-filter-bar { display: flex; background: #000; border-radius: 10px; padding: 4px; margin-bottom: 15px; }
+        .tab-btn { flex: 1; background: none; border: none; color: var(--text-gray); padding: 10px; font-weight: 600; font-size: 13px; cursor: pointer; border-radius: 8px; }
+        .tab-btn.active { background: var(--card-bg); color: var(--accent-green); }
+
+        /* PROFIL SEZMALARI VA OPTIONS (Rasm 4) */
+        .profile-card { text-align: center; padding: 20px; background: var(--panel-bg); border-radius: 16px; margin-bottom: 15px; }
+        .user-avatar { width: 80px; height: 80px; border-radius: 50%; background: linear-gradient(135deg, #00ff66, #00a8ff); margin: 0 auto 10px auto; font-size: 32px; line-height: 80px; color: #fff; font-weight: 700; }
+        .option-row {
+            background: var(--panel-bg); padding: 14px 16px; border-radius: 12px;
+            display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; cursor: pointer;
+        }
+        .option-left { display: flex; align-items: center; gap: 12px; font-size: 14px; }
+        .option-right { color: var(--text-gray); font-size: 13px; }
+
+        /* Switcher toggle */
+        .toggle-switch { width: 40px; height: 22px; background: #2c3e50; border-radius: 15px; position: relative; cursor: pointer; }
+        .toggle-switch.on { background: var(--accent-green); }
+        .toggle-switch::before { content: ''; position: absolute; width: 18px; height: 18px; background: #fff; border-radius: 50%; top: 2px; left: 2px; transition: 0.2s; }
+        .toggle-switch.on::before { left: 20px; }
+
+        /* NAVIGATSIYA */
+        .bottom-nav {
             position: fixed; bottom: 0; left: 0; width: 100%; background: var(--panel-bg);
-            display: flex; border-top: 1px solid #30363d; padding: 10px 0; z-index: 999;
+            display: flex; border-top: 1px solid #1a2330; padding: 12px 0; z-index: 1000;
         }
-        .nav-link {
-            flex: 1; text-align: center; color: var(--text-gray); font-size: 11px; font-weight: 600; text-decoration: none; cursor: pointer;
-        }
-        .nav-link.active { color: var(--accent-green); }
-        .nav-link i { font-size: 18px; display: block; margin-bottom: 4px; }
+        .nav-tab { flex: 1; text-align: center; color: var(--text-gray); font-size: 11px; font-weight: 500; cursor: pointer; }
+        .nav-tab.active { color: var(--accent-green); }
+        .nav-tab i { font-size: 18px; display: block; margin-bottom: 4px; }
     </style>
 </head>
 <body>
 
-    <div id="home" class="page active">
-        <div class="hero-banner">
+    <div class="live-drops" id="live-drops-container">
+        </div>
+
+    <div id="page-home" class="page active">
+        <div class="brand-header">
             <h1>SKINFIGHTS</h1>
-            <p>Eng yaxshi dropni biz bilan qo'lga kiriting!</p>
+            <p>Выводи лучший дроп с нами!</p>
         </div>
 
-        <div class="balance-box">
-            <div class="balance-title">Sizning balansingiz</div>
-            <div class="balance-amount">
-                <i class="fa-solid fa-circle-dollar-to-slot"></i>
-                <span id="balance-num">463</span>
-            </div>
-            <button class="btn-main" onclick="toggleModal(true)">TANGALAR SOTIB OLISH</button>
+        <div class="hero-chest-box">
+            <div class="lbl">Ваш Баланс</div>
+            <div class="hero-balance">🪙 <span id="main-balance">463</span></div>
+            <div class="animated-chest"></div>
+            <button class="btn-green" onclick="alert('Humo/Uzcard tolov tizimi ulanmoqda...')">Купить Монеты</button>
         </div>
 
-        <div class="section-box">
-            <h3><i class="fa-solid fa-calendar-check" style="color:var(--accent-gold)"></i> Kunlik bonus</h3>
-            <button id="bonus-action" class="btn-bonus" onclick="getDailyBonus()">Bonusni olish (+100 tanga)</button>
-            <p id="countdown-timer" style="text-align:center; font-size:13px; font-weight:600; color:var(--accent-gold); margin-top:8px; display:none;"></p>
-        </div>
-
-        <div class="section-box">
-            <h3><i class="fa-solid fa-tasks"></i> Vazifalar</h3>
-            <div class="task-item" onclick="window.open('https://t.me/skinfights_bot')">
-                <span>Rasmiy kanalga obuna bo'lish</span>
-                <span style="color:var(--accent-gold); font-weight:600;">+500 🪙</span>
+        <div class="game-modes-list">
+            <div class="mode-banner" onclick="switchTab('page-cases')">
+                <div class="mode-info"><h3>Кейсы</h3><p>Открывай кейсы и получай скины CS 2</p></div>
+                <div class="mode-icon"><i class="fa-solid fa-box-open"></i></div>
+            </div>
+            <div class="mode-banner" onclick="alert('Апгрейд режима скоро в игре!')">
+                <div class="mode-info"><h3>Апгрейд</h3><p>Улучшайте свои скины до максимума</p></div>
+                <div class="mode-icon"><i class="fa-solid fa-arrow-up-trending-lines"></i></div>
+            </div>
+            <div class="mode-banner" onclick="alert('Кейс-Баттлы в разработке')">
+                <div class="mode-info"><h3>Кейс-Баттлы</h3><p>Участвуй в баттлах и выигрывай призы</p></div>
+                <div class="mode-icon"><i class="fa-solid fa- एक्सयर"></i></div>
             </div>
         </div>
-    </div>
 
-    <div id="cases" class="page">
-        <h2 class="cases-title">Mavjud Keyslar</h2>
-        <div class="cases-container" id="cases-list-dom">
+        <h3 style="margin: 15px 0 10px 5px; font-size: 16px;">Активные задания</h3>
+        
+        <div class="task-card">
+            <h4>Ежедневный Бонус</h4>
+            <div style="font-size:12px; color:var(--accent-green); font-weight:600;">+120 🪙 <span style="color:var(--text-gray)">• Растет каждый день</span></div>
+            <div class="task-row">
+                <div class="timer-badge" id="daily-timer">00:00:00</div>
+                <button class="btn-action" id="btn-claim-bonus" onclick="claimDailyBonus()">Получить</button>
             </div>
-    </div>
-
-    <div id="case-detail" class="page">
-        <span onclick="goBackToCases()" style="cursor:pointer; color:var(--text-gray); font-size:14px;"><i class="fa-solid fa-chevron-left"></i> Orqaga qaytish</span>
-        <h2 id="detail-title" style="margin: 15px 0 5px 0;">Keys tarkibi</h2>
-        <div class="skins-list" id="skins-list-dom"></div>
-    </div>
-
-    <div id="inventory" class="page">
-        <h2 class="cases-title">Sizning Inventaringiz</h2>
-        <div style="text-align:center; padding:40px 10px; color:var(--text-gray);">
-            <i class="fa-solid fa-box-open" style="font-size:48px; margin-bottom:15px; opacity:0.3;"></i>
-            <p>Sizda hozircha skinlar mavjud emas. Keys ochib yutib oling!</p>
         </div>
-    </div>
 
-    <div id="profile" class="page">
-        <h2 class="cases-title">O'yinchi Profili</h2>
-        <div class="profile-container">
-            <div class="profile-avatar-wrap" id="user-avatar-container">
-                <i class="fa-solid fa-user"></i>
-            </div>
-            <h3 id="user-display-name" style="font-size:18px; color:#fff;">Foydalanuvchi</h3>
-            
-            <div class="profile-stats">
-                <div>
-                    <div class="stat-val" id="stats-opened-count">0</div>
-                    <div class="stat-lbl">Keyslar ochilgan</div>
-                </div>
-                <div>
-                    <div class="stat-val" style="color:var(--accent-green)">Elite</div>
-                    <div class="stat-lbl">Sizning Rangiz</div>
-                </div>
-            </div>
-            <div style="font-size:11px; color:var(--text-gray); margin-top:15px; border-top:1px dashed #30363d; padding-top:10px;">
-                Telegram ID: <span id="user-telegram-id">Yuklanmoqda...</span>
+        <div class="task-card">
+            <h4>Пригласить друзей</h4>
+            <div style="font-size:12px; color:var(--accent-green); font-weight:600;">+500 🪙 <span style="color:var(--text-gray)">• И реферальные бонусы</span></div>
+            <div class="task-row">
+                <span style="font-size:12px; color:var(--text-gray)">Позови друга в бот</span>
+                <button class="btn-action" onclick="alert('Referal havola nusxalandi!')">Пригласить</button>
             </div>
         </div>
     </div>
 
-    <div id="pay-modal" class="modal-overlay">
-        <div class="modal-body">
-            <h3 style="margin-bottom:15px;">Hisobni to'ldirish</h3>
-            <div class="pay-card" onclick="alert('Humo tizimiga o\'tilmoqda...')">
-                <span>HUMO Kartalari</span> <i class="fa-solid fa-money-check-dollar" style="color:#00a8ff"></i>
+    <div id="page-cases" class="page">
+        <h2 style="margin-bottom:15px; font-size:22px;">Доступные Кейсы</h2>
+        <div class="grid-2x2">
+            <div class="case-box">
+                <div class="case-gfx"></div>
+                <h4>Grunt</h4>
+                <div class="case-pricing"><span class="tag-coin">🪙 500</span><span class="tag-opened">📦 14.7M</span></div>
             </div>
-            <div class="pay-card" onclick="alert('Uzcard tizimiga o\'tilmoqda...')">
-                <span>UZCARD Kartalari</span> <i class="fa-solid fa-credit-card" style="color:#00a8ff"></i>
+            <div class="case-box">
+                <div class="badge-new">New!</div>
+                <div class="case-gfx" style="box-shadow: 0 0 10px #00a8ff;"></div>
+                <h4>Tundra</h4>
+                <div class="case-pricing"><span class="tag-coin">🪙 750</span><span class="tag-opened">📦 1.2M</span></div>
             </div>
-            <span onclick="toggleModal(false)" style="display:inline-block; margin-top:15px; font-size:13px; color:var(--text-gray); cursor:pointer; font-weight:600;">Yopish</span>
+            <div class="case-box">
+                <div class="case-gfx"></div>
+                <h4>Lurk</h4>
+                <div class="case-pricing"><span class="tag-coin">🪙 1500</span><span class="tag-opened">📦 2.1M</span></div>
+            </div>
+            <div class="case-box">
+                <div class="case-gfx" style="box-shadow: 0 0 10px #ffb700;"></div>
+                <h4>Namangan</h4>
+                <div class="case-pricing"><span class="tag-coin">🪙 2000</span><span class="tag-opened">📦 573k</span></div>
+            </div>
         </div>
     </div>
 
-    <div class="nav-bar">
-        <div class="nav-link active" onclick="navigateTo('home', this)"><i class="fa-solid fa-square-poll-vertical"></i>Asosiy</div>
-        <div class="nav-link" onclick="navigateTo('cases', this)"><i class="fa-solid fa-cubes"></i>Keyslar</div>
-        <div class="nav-link" onclick="navigateTo('inventory', this)"><i class="fa-solid fa-briefcase"></i>Inventar</div>
-        <div class="nav-link" onclick="navigateTo('profile', this)"><i class="fa-solid fa-circle-user"></i>Profil</div>
+    <div id="page-inventory" class="page">
+        <h2 style="margin-bottom:15px; font-size:22px;">Инвентарь</h2>
+        <div class="tab-filter-bar">
+            <button class="tab-btn active" onclick="setInvTab('doc')">Доступное</button>
+            <button class="tab-btn" onclick="setInvTab('steam')">Steam</button>
+            <button class="tab-btn" onclick="setInvTab('sold')">Продано</button>
+        </div>
+        <div id="inventory-content" style="text-align:center; padding:30px; color:var(--text-gray);">
+            <i class="fa-solid fa-box-open" style="font-size:40px; margin-bottom:10px; opacity:0.3"></i>
+            <p>Здесь пока ничего нет. Откройте ваш первый кейс!</p>
+        </div>
+    </div>
+
+    <div id="page-profile" class="page">
+        <div class="profile-card">
+            <div class="user-avatar" id="avatar-placeholder">U</div>
+            <h3 id="username-display" style="font-size:20px;">Foydalanuvchi</h3>
+            <p style="font-size:12px; color:var(--text-gray); margin-top:4px;">ID: <span id="user-tg-id">5498016172</span></p>
+        </div>
+
+        <div class="option-row" onclick="changeLanguage()">
+            <div class="option-left"><i class="fa-solid fa-language"></i> <span>Change Language</span></div>
+            <div class="option-right" style="color:var(--accent-green); font-weight:600;">O'zbekcha</div>
+        </div>
+
+        <div class="option-row">
+            <div class="option-left"><i class="fa-solid fa-volume-high"></i> <span>Включить звуки</span></div>
+            <div class="toggle-switch on" onclick="this.classList.toggle('on')"></div>
+        </div>
+
+        <div class="option-row">
+            <div class="option-left"><i class="fa-solid fa-vibration"></i> <span>Включить вибрацию</span></div>
+            <div class="toggle-switch" onclick="this.classList.toggle('on')"></div>
+        </div>
+
+        <div class="option-row" onclick="alert('Trade Link kiritish oynasi')">
+            <div class="option-left"><i class="fa-solid fa-link"></i> <span>Trade Link</span></div>
+            <div class="option-right"><i class="fa-solid fa-chevron-right"></i></div>
+        </div>
+
+        <div class="option-row" onclick="window.open('https://t.me/SkinsFatherSupport')">
+            <div class="option-left"><i class="fa-solid fa-headset"></i> <span>Служба поддержки</span></div>
+            <div class="option-right"><i class="fa-solid fa-chevron-right"></i></div>
+        </div>
+    </div>
+
+    <div class="bottom-nav">
+        <div class="nav-tab active" onclick="switchTab('page-home', this)"><i class="fa-solid fa-house"></i>Главная</div>
+        <div class="nav-tab" onclick="switchTab('page-cases', this)"><i class="fa-solid fa-cubes"></i>Кейсы</div>
+        <div class="nav-tab" onclick="switchTab('page-inventory', this)"><i class="fa-solid fa-briefcase"></i>Инвентарь</div>
+        <div class="nav-tab" onclick="switchTab('page-profile', this)"><i class="fa-solid fa-circle-user"></i>Профиль</div>
     </div>
 
     <script>
-        // 1. CHUNCHAKI XATO BERMAYDIGAN SVG RANGLI TASVIRLI SARIQLAR VA SKINLAR RO'YXATI
-        const keySandiqlar = [
-            { id: 'grunt', name: 'Grunt Case', price: 500, opens: '14.7M', isNew: false, color: '#e67e22' },
-            { id: 'tundra', name: 'Tundra Case', price: 750, opens: '1.2M', isNew: true, color: '#3498db' },
-            { id: 'lurk', name: 'Lurk Case', price: 1500, opens: '2.1M', isNew: false, color: '#2ecc71' },
-            { id: 'namangan', name: 'Namangan Case', price: 2000, opens: '573.1k', isNew: false, color: '#f1c40f' }
-        ];
-
-        const skinMaorif = [
-            { name: "Desert Eagle | Discipline", rate: "0.46%", price: "43 132", badge: "FN" },
-            { name: "Desert Eagle | Corinthian", rate: "0.48%", price: "42 340", badge: "MW" },
-            { name: "Desert Eagle | Light Rail", rate: "1.63%", price: "24 292", badge: "FT" },
-            { name: "Desert Eagle | Oxide Blaze", rate: "2.60%", price: "17 317", badge: "BS" }
-        ];
-
-        // 3D vektorli sandiq rasmi (hech qachon o'chib ketmaydi)
-        function getSvgBox(color) {
-            return `<svg class="case-icon-svg" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M6 22L32 10L58 22L32 34L6 22Z" fill="${color}" stroke="#fff" stroke-width="2"/>
-                <path d="M6 22V44L32 56V34L6 22Z" fill="${color}" opacity="0.8" stroke="#fff" stroke-width="2"/>
-                <path d="M58 22V44L32 56V34L58 22Z" fill="${color}" opacity="0.6" stroke="#fff" stroke-width="2"/>
-                <circle cx="32" cy="34" r="4" fill="#ffb703"/>
-            </svg>`;
-        }
-
-        // Qurol tasviri uchun ishonchli vektor
-        function getWeaponSvg() {
-            return `<svg class="skin-weapon-svg" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M10 35H25L50 20H58V28L48 32V40H42L38 35H10V35Z" fill="#8b949e" stroke="#fff" stroke-width="2"/>
-                <path d="M20 35V45H15V35H20Z" fill="#ffb703"/>
-            </svg>`;
-        }
-
-        // Sahifalarni navigatsiya qilish
-        function navigateTo(id, currentEl) {
+        // Sahifalarni almashtirish funksiyasi
+        function switchTab(id, el) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
             document.getElementById(id).classList.add('active');
-            if(currentEl) {
-                document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
-                currentEl.classList.add('active');
+            if(el) {
+                document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+                el.classList.add('active');
             }
         }
 
-        // Keyslar ro'yxatini shakllantirish
-        function initCases() {
-            const listDom = document.getElementById('cases-list-dom');
-            listDom.innerHTML = '';
-            keySandiqlar.forEach(item => {
-                listDom.innerHTML += `
-                    <div class="case-item" onclick="showCaseDetail('${item.name}')">
-                        ${item.isNew ? '<div class="case-label-new">New!</div>' : ''}
-                        ${getSvgBox(item.color)}
-                        <div class="case-title-text">${item.name}</div>
-                        <div class="case-meta">
-                            <span class="badge-price">🪙 ${item.price}</span>
-                            <span class="badge-count">📦 ${item.opens}</span>
-                        </div>
-                    </div>
-                `;
-            });
+        // Inventar ichki tablari (Rasm 5)
+        function setInvTab(type) {
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            event.target.classList.add('active');
+            const cnt = document.getElementById('inventory-content');
+            if(type === 'steam') {
+                cnt.innerHTML = `<p style="color:#fff">Steam hisobingiz yuklanmoqda...</p>`;
+            } else {
+                cnt.innerHTML = `<i class="fa-solid fa-box-open" style="font-size:40px; margin-bottom:10px; opacity:0.3"></i><p>Здесь пока ничего нет.</p>`;
+            }
         }
 
-        function showCaseDetail(title) {
-            document.getElementById('detail-title').innerText = title;
-            const container = document.getElementById('skins-list-dom');
+        // Live Drop simulyatsiyasi (Yuqoridagi lenta uchun)
+        const weapons = ['AK-47', 'AWP', 'M4A1-S', 'USP-S', 'Glock-18'];
+        function generateLiveDrops() {
+            const container = document.getElementById('live-drops-container');
             container.innerHTML = '';
-            skinMaorif.forEach(skin => {
+            for(let i=0; i<10; i++) {
+                let randomWep = weapons[Math.floor(Math.random() * weapons.length)];
                 container.innerHTML += `
-                    <div class="skin-item">
-                        <div style="display:flex; justify-content:space-between; font-size:10px; color:var(--accent-gold)">
-                            <span>${skin.badge}</span><span>${skin.rate}</span>
-                        </div>
-                        ${getWeaponSvg()}
-                        <div class="skin-name">${skin.name}</div>
-                        <div style="font-size:12px; color:var(--accent-gold); margin-top:5px;">🪙 ${skin.price}</div>
+                    <div class="drop-item">
+                        <div class="drop-user-badge">${i}</div>
+                        <div style="font-weight:700; color:#fff">${randomWep}</div>
+                        <div style="color:var(--accent-green); font-size:9px;">🪙 ${(Math.random()*2000 + 100).toFixed(0)}</div>
                     </div>
                 `;
-            });
-            navigateTo('case-detail');
+            }
         }
 
-        function goBackToCases() { navigateTo('cases'); }
-        function toggleModal(show) { document.getElementById('pay-modal').style.display = show ? 'flex' : 'none'; }
-
-        // KUNLIK BONUS VA TAYMER LOGIKASI
-        function getDailyBonus() {
-            let b = parseInt(document.getElementById('balance-num').innerText);
-            document.getElementById('balance-num').innerText = b + 100;
-            let end = new Date().getTime() + 24 * 60 * 60 * 1000;
-            localStorage.setItem('sf_bonus_time', end);
-            runTimer(end);
+        // Kunlik bonus 24 soatlik taymer logikasi
+        function claimDailyBonus() {
+            let bal = parseInt(document.getElementById('main-balance').innerText);
+            document.getElementById('main-balance').innerText = bal + 120;
+            let targetTime = new Date().getTime() + 24 * 60 * 60 * 1000;
+            localStorage.setItem('sf_timer_end', targetTime);
+            initTimer(targetTime);
         }
 
-        function runTimer(endTime) {
-            const btn = document.getElementById('bonus-action');
-            const tmr = document.getElementById('countdown-timer');
+        function initTimer(endTime) {
+            const btn = document.getElementById('btn-claim-bonus');
+            const display = document.getElementById('daily-timer');
             btn.disabled = true;
-            tmr.style.display = 'block';
+            btn.style.background = '#2c3e50';
 
-            let tint = setInterval(() => {
-                let diff = endTime - new Date().getTime();
+            let interval = setInterval(() => {
+                let now = new Date().getTime();
+                let diff = endTime - now;
+
                 let h = Math.floor((diff / (1000 * 60 * 60)) % 24);
                 let m = Math.floor((diff / (1000 * 60)) % 60);
                 let s = Math.floor((diff / 1000) % 60);
 
-                tmr.innerText = `Keyingi bonusga: ${h}soat ${m}daqiqa ${s}soniya qoldi`;
+                display.innerText = `${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
+                display.style.color = "var(--accent-gold)";
 
                 if(diff <= 0) {
-                    clearInterval(tint);
+                    clearInterval(interval);
                     btn.disabled = false;
-                    tmr.style.display = 'none';
-                    localStorage.removeItem('sf_bonus_time');
+                    btn.style.background = "var(--accent-green)";
+                    display.innerText = "00:00:00";
+                    display.style.color = "var(--text-gray)";
+                    localStorage.removeItem('sf_timer_end');
                 }
             }, 1000);
         }
 
-        // TELEGRAM INTEGRATSIYASI (XATOLIKLAR BARTARAF ETILDI)
+        // Tilni o'zgartirish oyna simulyatsiyasi
+        function changeLanguage() {
+            alert("Til tanlash: \n1. O'zbekcha \n2. Русский \n3. English");
+        }
+
+        // Ishga tushirish
         window.onload = function() {
-            initCases();
-            let saved = localStorage.getItem('sf_bonus_time');
-            if(saved && new Date().getTime() < saved) {
-                runTimer(parseInt(saved));
+            generateLiveDrops();
+            let savedTime = localStorage.getItem('sf_timer_end');
+            if(savedTime && new Date().getTime() < savedTime) {
+                initTimer(parseInt(savedTime));
             }
 
-            if (window.Telegram && window.Telegram.WebApp) {
-                const webapp = window.Telegram.WebApp;
-                webapp.expand();
-                if (webapp.initDataUnsafe && webapp.initDataUnsafe.user) {
-                    const u = webapp.initDataUnsafe.user;
-                    document.getElementById('user-display-name').innerText = (u.first_name + ' ' + (u.last_name || '')).trim();
-                    document.getElementById('user-telegram-id').innerText = u.id;
-                    if (u.photo_url) {
-                        document.getElementById('user-avatar-container').innerHTML = `<img src="${u.photo_url}" alt="Avatar">`;
+            // Telegram WebApp orqali foydalanuvchini aniqlash
+            if(window.Telegram && window.Telegram.WebApp) {
+                const tg = window.Telegram.WebApp;
+                tg.expand();
+                if(tg.initDataUnsafe && tg.initDataUnsafe.user) {
+                    const u = tg.initDataUnsafe.user;
+                    document.getElementById('username-display').innerText = u.first_name;
+                    document.getElementById('user-tg-id').innerText = u.id;
+                    if(u.photo_url) {
+                        document.getElementById('avatar-placeholder').innerHTML = `<img src="${u.photo_url}" style="width:100%; height:100%; border-radius:50%">`;
+                    } else {
+                        document.getElementById('avatar-placeholder').innerText = u.first_name[0].toUpperCase();
                     }
-                } else {
-                    // Agar brauzerda test qilinayotgan bo'lsa demo rejim
-                    document.getElementById('user-telegram-id').innerText = "5498016172";
-                    document.getElementById('user-display-name').innerText = "SkinsFather Admin";
                 }
             }
         }
