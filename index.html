@@ -1,414 +1,308 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="uz">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SkinsFather Premium Pro</title>
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <title>SkinFights - Telegram WebApp</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* Dark Cyberpunk & Premium Glossy Style */
+        :root {
+            --bg-color: #0b0e14;
+            --card-bg: #131a26;
+            --accent-gold: #ffb703;
+            --text-color: #ffffff;
+            --text-gray: #8a96a8;
+            --purple-grad: linear-gradient(135deg, #4c1d95, #2563eb);
+        }
+
         body {
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            background: #0d111a;
-            color: #ffffff;
-            margin: 0; padding: 0;
-            user-select: none; overflow-x: hidden;
-            padding-bottom: 90px;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            padding-bottom: 80px;
+            user-select: none;
         }
 
-        /* 1. Recent Drops Lenta (Top) */
-        .recent-drops {
-            display: flex; gap: 10px; padding: 12px;
-            background: rgba(14, 20, 32, 0.7);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-            overflow-x: auto; scrollbar-width: none;
+        /* Sahifalar boshqaruvi */
+        .page { display: none; padding: 15px; }
+        .page.active { display: block; }
+
+        /* HEADER & BALANS */
+        .balance-card {
+            background: linear-gradient(135deg, #1e293b, #0f172a);
+            border: 2px solid var(--accent-gold);
+            border-radius: 20px;
+            padding: 20px;
+            text-align: center;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 25px rgba(255, 183, 3, 0.1);
         }
-        .recent-drops::-webkit-scrollbar { display: none; }
+        .balance-title { color: var(--text-gray); font-size: 14px; text-transform: uppercase; }
+        .balance-amount { font-size: 36px; font-weight: bold; color: var(--accent-gold); margin: 10px 0; }
+        .balance-amount i { margin-right: 5px; }
         
-        .drop-item {
-            min-width: 75px; background: linear-gradient(180deg, #182030 0%, #101622 100%);
-            border-radius: 8px; padding: 8px; text-align: center;
-            border: 1px solid rgba(255, 255, 255, 0.03); position: relative;
+        .btn-deposit {
+            background-color: var(--accent-gold);
+            color: #000;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-weight: bold;
+            font-size: 16px;
+            cursor: pointer;
+            width: 100%;
+            transition: 0.2s;
         }
-        .drop-item img { width: 50px; height: auto; }
-        .drop-tag { font-size: 8px; font-weight: bold; padding: 2px 4px; border-radius: 4px; position: absolute; top: 4px; left: 4px; }
-        .tag-purple { background: #8a2be2; color: #fff; }
-        .tag-gold { background: #ffb703; color: #000; }
 
-        /* Main Containers */
-        .tab-content { display: none; padding: 15px; animation: slideUp 0.3s ease; }
-        .tab-content.active { display: block; }
-        @keyframes slideUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
-        /* 2. Main Dashboard (SkinFights-like) */
-        .hero-section {
-            background: radial-gradient(circle at center, #16222f 0%, #0f1722 100%);
-            border-radius: 20px; padding: 25px 20px; text-align: center;
-            border: 1px solid rgba(0, 228, 131, 0.15);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5); position: relative; margin-bottom: 20px;
+        /* MODAL (Tolov tizimlari) */
+        .modal {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.8); z-index: 1000; justify-content: center; align-items: center;
         }
-        .hero-title { font-size: 28px; font-weight: 900; letter-spacing: 2px; color: #00e483; text-shadow: 0 0 20px rgba(0,228,131,0.3); margin-bottom: 20px; }
-        .chest-img-box { width: 100%; max-width: 220px; margin: 0 auto 15px auto; position: relative; }
-        .chest-img-box img { width: 100%; height: auto; filter: drop-shadow(0 0 25px rgba(0, 228, 131, 0.4)); }
-        
-        .balance-title { font-size: 13px; color: #8792a5; text-transform: uppercase; font-weight: 700; letter-spacing: 1px; }
-        .balance-value { font-size: 36px; font-weight: 800; color: #ffffff; display: flex; align-items: center; justify-content: center; gap: 8px; margin: 5px 0 20px 0; }
-        .balance-value span { color: #00e483; text-shadow: 0 0 15px rgba(0,228,131,0.5); }
-
-        /* Premium Buttons */
-        .btn-green {
-            background: linear-gradient(135deg, #00ff87 0%, #60efff 100%);
-            color: #0b0f17; font-weight: 800; font-size: 16px; border: none;
-            padding: 16px 32px; border-radius: 14px; cursor: pointer; width: 100%;
-            box-shadow: 0 5px 20px rgba(0, 255, 135, 0.3); text-transform: uppercase; letter-spacing: 1px; transition: 0.2s;
+        .modal-content {
+            background: var(--card-bg); padding: 25px; border-radius: 20px; width: 85%; max-width: 400px; text-align: center;
         }
-        .btn-green:active { transform: scale(0.97); box-shadow: none; }
-
-        /* 3. Daily Bonus & Tasks Widgets */
-        .section-header { font-size: 16px; font-weight: 700; color: #8792a5; margin: 20px 0 10px 0; text-transform: uppercase; letter-spacing: 0.5px; }
-        
-        .bonus-widget {
-            background: #141c28; border: 1px solid #1e293b; border-radius: 14px; padding: 15px;
-            display: flex; justify-content: space-between; align-items: center;
+        .payment-method {
+            background: #1e293b; padding: 15px; margin: 10px 0; border-radius: 12px;
+            display: flex; justify-content: space-between; align-items: center; font-weight: bold; cursor: pointer;
         }
-        .widget-info h4 { margin: 0 0 4px 0; font-size: 15px; font-weight: 700; }
-        .widget-info p { margin: 0; font-size: 12px; color: #64748b; }
-        
-        .btn-bonus-claim {
-            background: #1e293b; border: 1px solid #334155; color: #fff; padding: 10px 16px;
-            border-radius: 10px; font-weight: 700; font-size: 13px; cursor: pointer;
-        }
-        .btn-bonus-claim.ready { background: linear-gradient(135deg, #ffb703 0%, #fb8500 100%); color: #000; border: none; }
 
-        /* 4. Case Grid Section (image_25e4a1.jpg) */
-        .case-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        /* BONUSTAR */
+        .bonus-section { background: var(--card-bg); padding: 15px; border-radius: 15px; margin-bottom: 15px; }
+        .btn-bonus { width: 100%; background: #22c55e; border: none; padding: 12px; color: white; border-radius: 10px; font-weight: bold; }
+        .btn-bonus:disabled { background: #475569; color: var(--text-gray); }
+
+        /* CASE PANELI (Rasm 2) */
+        .cases-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
         .case-card {
-            background: #111723; border: 1px solid #1c2637; border-radius: 16px;
-            overflow: hidden; padding: 12px; position: relative; display: flex; flex-direction: column; align-items: center;
+            background: var(--card-bg); border-radius: 15px; overflow: hidden; text-align: center; padding: 15px;
+            border: 1px solid #1e293b; position: relative;
         }
-        .case-card .case-badge { position: absolute; top: 10px; right: 10px; background: #ef4444; color: white; font-size: 9px; font-weight: 800; padding: 3px 6px; border-radius: 6px; text-transform: uppercase; }
-        .case-card img { width: 120px; height: auto; margin: 10px 0; filter: drop-shadow(0 8px 15px rgba(0,0,0,0.5)); transition: 0.3s; }
-        .case-card:hover img { transform: scale(1.05); }
-        .case-title { font-weight: 700; font-size: 15px; margin-bottom: 8px; color: #fff; }
-        
-        .case-meta { display: flex; gap: 8px; width: 100%; justify-content: center; }
-        .meta-pill { background: rgba(0,0,0,0.4); padding: 5px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; color: #94a3b8; display: flex; align-items: center; gap: 4px; }
-        .meta-pill.price { color: #ffb703; font-weight: 700; }
+        .case-card img { width: 100%; max-height: 120px; object-fit: contain; }
+        .case-name { font-weight: bold; margin-top: 10px; }
+        .case-price { color: var(--accent-gold); font-size: 14px; margin-top: 5px; }
 
-        /* 5. Inside Case Skins View (image_25e523.jpg) */
-        .inside-case-header { display: flex; align-items: center; gap: 15px; margin-bottom: 20px; }
-        .btn-back { background: #1e293b; border: none; color: #fff; padding: 8px 14px; border-radius: 8px; font-weight: bold; cursor: pointer; }
-        
-        .skins-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+        /* KEYS ICHIDAGI SKINLAR (Rasm 3) */
+        .skins-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 10px; }
         .skin-card {
-            background: linear-gradient(180deg, #1b1931 0%, #11131c 100%);
-            border: 1px solid rgba(138, 43, 226, 0.2); border-radius: 14px; padding: 12px;
-            position: relative; text-align: center; overflow: hidden;
+            background: var(--purple-grad); padding: 10px; border-radius: 12px; text-align: center; font-size: 12px;
         }
-        .skin-card.rare-blue { background: linear-gradient(180deg, #171f3a 0%, #11131c 100%); border-color: rgba(58, 134, 255, 0.2); }
-        .skin-card.rare-gold { background: linear-gradient(180deg, #2b2518 0%, #11131c 100%); border-color: rgba(255, 183, 3, 0.2); }
-        
-        .skin-wear { position: absolute; top: 10px; left: 10px; font-size: 9px; font-weight: bold; color: #94a3b8; }
-        .skin-chance { position: absolute; top: 10px; right: 10px; font-size: 9px; font-weight: 700; background: rgba(0,228,131,0.15); color: #00e483; padding: 2px 5px; border-radius: 4px; }
-        .skin-card img { width: 90px; height: auto; margin: 15px 0 5px 0; filter: drop-shadow(0 5px 10px rgba(0,0,0,0.3)); }
-        .skin-name { font-size: 11px; color: #94a3b8; margin: 2px 0; }
-        .skin-title { font-size: 13px; font-weight: 700; color: #fff; margin-bottom: 8px; }
-        .skin-price { font-size: 11px; font-weight: 700; color: #ffb703; background: rgba(0,0,0,0.3); padding: 4px; border-radius: 6px; display: inline-block; width: 80%; }
+        .skin-card img { width: 100%; height: auto; }
 
-        /* 6. Deposit Bottom Sheet (Modal Drawer) */
-        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); backdrop-filter: blur(5px); z-index: 2000; display: none; }
-        .deposit-drawer {
-            position: fixed; bottom: -100%; left: 0; width: 100%; background: #101622;
-            border-top: 2px solid #00e483; border-radius: 24px 24px 0 0; padding: 25px 20px;
-            box-shadow: 0 -10px 30px rgba(0,0,0,0.5); z-index: 2001; transition: bottom 0.3s ease; box-sizing: border-box;
-        }
-        .deposit-drawer.open { bottom: 0; }
-        .drawer-close { float: right; font-size: 20px; color: #64748b; cursor: pointer; font-weight: bold; }
-        .pay-option {
-            display: flex; justify-content: space-between; align-items: center;
-            background: #182030; border: 1px solid #232e44; padding: 15px; border-radius: 12px; margin-top: 12px; cursor: pointer;
-        }
-        .pay-option:active { background: #1e293b; }
-
-        /* Navigation Bar */
+        /* NAVIGATSIYA (PASTKI MENYU) */
         .bottom-nav {
-            position: fixed; bottom: 0; left: 0; width: 100%; background: #090d14;
-            border-top: 1px solid #161f2e; display: flex; justify-content: space-around; padding: 10px 0; z-index: 1000;
+            position: fixed; bottom: 0; left: 0; width: 100%; background: var(--card-bg);
+            display: flex; justify-content: space-around; padding: 12px 0; border-top: 1px solid #1e293b; box-shadow: 0 -5px 15px rgba(0,0,0,0.5);
         }
-        .nav-item { display: flex; flex-direction: column; align-items: center; color: #526077; font-size: 11px; font-weight: bold; cursor: pointer; width: 25%; text-decoration: none; }
-        .nav-icon { font-size: 20px; margin-bottom: 2px; }
-        .nav-item.active { color: #00e483; }
+        .nav-item { color: var(--text-gray); text-align: center; text-decoration: none; font-size: 12px; cursor: pointer; flex: 1; }
+        .nav-item.active { color: var(--accent-gold); }
+        .nav-item i { font-size: 20px; display: block; margin-bottom: 4px; }
+
+        /* PROFIL */
+        .profile-header { text-align: center; padding: 20px 0; }
+        .profile-avatar { width: 80px; height: 80px; border-radius: 50%; border: 3px solid var(--accent-gold); }
     </style>
 </head>
 <body>
 
-    <!-- 1. GORIZONTAL RECENT DROPS LENTASI -->
-    <div class="recent-drops">
-        <div class="drop-item"><span class="drop-tag tag-purple">FN</span><img src="https://i.postimg.cc/mD368vX6/deagle.png" alt="Deagle"><div style="font-size:9px;color:#ffb703;">43k 🪙</div></div>
-        <div class="drop-item"><span class="drop-tag tag-gold">MW</span><img src="https://i.postimg.cc/mD368vX6/deagle.png" alt="Deagle"><div style="font-size:9px;color:#ffb703;">25k 🪙</div></div>
-        <div class="drop-item"><span class="drop-tag tag-purple">FT</span><img src="https://i.postimg.cc/mD368vX6/deagle.png" alt="Deagle"><div style="font-size:9px;color:#ffb703;">39k 🪙</div></div>
-        <div class="drop-item"><span class="drop-tag tag-purple">BS</span><img src="https://i.postimg.cc/mD368vX6/deagle.png" alt="Deagle"><div style="font-size:9px;color:#ffb703;">22k 🪙</div></div>
-    </div>
-
-    <!-- TAB 1: SKINFIGHTS ASOSIY SAHIFA -->
-    <div id="main-dashboard" class="tab-content active">
-        <div class="hero-section">
-            <div class="hero-title">SKINFIGHTS</div>
-            <p style="color:#8792a5; font-size:12px; margin-top:-15px; margin-bottom:20px;">Выводи лучший дроп с нами!</p>
-            
-            <div class="chest-img-box">
-                <!-- Premium yorqin sandiq rasmi -->
-                <img src="https://i.postimg.cc/0jXvSgY0/green-chest.png" alt="Chest">
-            </div>
-
-            <div class="balance-title">Ваш Баланс</div>
-            <div class="balance-value"><span id="dash-balance">463</span> 💎</div>
-            
-            <!-- Alohida bo'limga o'tmaydi, modalni ochadi -->
-            <button class="btn-green" onclick="openDepositDrawer()">Купить Изумруды</button>
+    <div id="home-page" class="page active">
+        <div class="balance-card">
+            <div class="balance-title">Sizning Balansingiz</div>
+            <div class="balance-amount"><i class="fa-solid fa-coins"></i> <span id="user-balance">463</span></div>
+            <button class="btn-deposit" onclick="openModal()">TANGALAR SOTIB OLISH</button>
         </div>
 
-        <div class="section-header">Активные задания</div>
-        
-        <!-- Kunlik bonus va jonli vaqt taymeri -->
-        <div class="bonus-widget">
-            <div class="widget-info">
-                <h4>Ежедневный бонус</h4>
-                <p id="bonus-timer-text">Получите изумруды бесплатно</p>
-            </div>
-            <button id="btn-daily-bonus" class="btn-bonus-claim ready" onclick="triggerDailyBonus()">Взять</button>
+        <div class="bonus-section">
+            <h3><i class="fa-solid fa-gift" style="color:red"></i> Kunlik Bonus</h3>
+            <button id="bonus-btn" class="btn-bonus" onclick="claimDailyBonus()">Bonusni olish (100 tanga)</button>
+            <p id="timer" style="text-align:center; font-weight:bold; color:var(--accent-gold); display:none;"></p>
         </div>
-    </div>
 
-    <!-- TAB 2: KEYSLAR RO'YXATI (image_25e4a1.jpg uslubida) -->
-    <div id="cases-list" class="tab-content">
-        <div class="section-header">Доступные Кейсы</div>
-        <div class="case-grid">
-            <!-- Grunt Case -->
-            <div class="case-card" onclick="viewCaseDetails('Grunt', 500)">
-                <img src="https://i.postimg.cc/HkbM48V2/box1.png" alt="Grunt">
-                <div class="case-title">Grunt</div>
-                <div class="case-meta">
-                    <div class="meta-pill price">500 🪙</div>
-                    <div class="meta-pill">📦 14.7M</div>
-                </div>
-            </div>
-            <!-- Tundra Case -->
-            <div class="case-card" onclick="viewCaseDetails('Tundra', 750)">
-                <span class="case-badge">New!</span>
-                <img src="https://i.postimg.cc/pXg3gXy0/box2.png" alt="Tundra">
-                <div class="case-title">Tundra</div>
-                <div class="case-meta">
-                    <div class="meta-pill price">750 🪙</div>
-                    <div class="meta-pill">📦 1.2M</div>
-                </div>
-            </div>
-            <!-- Lurk Case -->
-            <div class="case-card" onclick="viewCaseDetails('Lurk', 1500)">
-                <img src="https://i.postimg.cc/vH6fXv6r/box3.png" alt="Lurk">
-                <div class="case-title">Lurk</div>
-                <div class="case-meta">
-                    <div class="meta-pill price">1500 🪙</div>
-                    <div class="meta-pill">📦 2.1M</div>
-                </div>
-            </div>
-            <!-- Namangan Case -->
-            <div class="case-card" onclick="viewCaseDetails('Namangan', 2000)">
-                <img src="https://i.postimg.cc/g23YgXf0/box4.png" alt="Namangan">
-                <div class="case-title">Namangan</div>
-                <div class="case-meta">
-                    <div class="meta-pill price">2000 🪙</div>
-                    <div class="meta-pill">📦 573k</div>
-                </div>
+        <div class="bonus-section">
+            <h3><i class="fa-solid fa-bell"></i> Vazifalar</h3>
+            <div class="payment-method" onclick="window.open('https://t.me/skinfights_bot')">
+                <span>Telegram kanalga a'zo bo'ling</span>
+                <span style="color:var(--accent-gold)">+50 tanga</span>
             </div>
         </div>
     </div>
 
-    <!-- TAB 3: KEYSNING ICHIDAGI SKINLAR (image_25e523.jpg uslubida) -->
-    <div id="case-details" class="tab-content">
-        <div class="inside-case-header">
-            <button class="btn-back" onclick="switchTab('cases-list')">← Назад</button>
-            <h2 id="selected-case-title" style="margin:0; font-size:20px;">Кейс</h2>
-        </div>
-        
-        <button class="btn-green" style="margin-bottom: 20px;" onclick="spinRoulette()">Открыть кейс за <span id="open-case-price">500</span> 🪙</button>
-
-        <div class="skins-grid">
-            <div class="skin-card">
-                <span class="skin-wear">STATTRAK™/FT</span><span class="skin-chance">0.46%</span>
-                <img src="https://i.postimg.cc/mD368vX6/deagle.png" alt="skin">
-                <div class="skin-name">Desert Eagle</div><div class="skin-title">Trigger Discipline</div>
-                <div class="skin-price">43 132 🪙</div>
+    <div id="games-page" class="page">
+        <h2 style="text-align:center">Keyslar do'koni</h2>
+        <div class="cases-grid">
+            <div class="case-card" onclick="openCaseView('Glow Case')">
+                <img src="https://community.cloudflare.steamstatic.com/public/images/economy/community/case_shattered_web.png" alt="Case">
+                <div class="case-name">Glow Case</div>
+                <div class="case-price"><i class="fa-solid fa-coins"></i> 500</div>
             </div>
-            <div class="skin-card rare-blue">
-                <span class="skin-wear">FN</span><span class="skin-chance">0.48%</span>
-                <img src="https://i.postimg.cc/mD368vX6/deagle.png" alt="skin">
-                <div class="skin-name">Desert Eagle</div><div class="skin-title">Corinthian</div>
-                <div class="skin-price">42 340 🪙</div>
+            <div class="case-card" onclick="openCaseView('Tundra Case')">
+                <img src="https://community.cloudflare.steamstatic.com/public/images/economy/community/case_fracture.png" alt="Case">
+                <div class="case-name">Tundra Case</div>
+                <div class="case-price"><i class="fa-solid fa-coins"></i> 750</div>
             </div>
-            <div class="skin-card">
-                <span class="skin-wear">MW</span><span class="skin-chance">0.6%</span>
-                <img src="https://i.postimg.cc/mD368vX6/deagle.png" alt="skin">
-                <div class="skin-name">Desert Eagle</div><div class="skin-title">Trigger Discipline</div>
-                <div class="skin-price">39 122 🪙</div>
+            <div class="case-card" onclick="openCaseView('Ember Case')">
+                <img src="https://community.cloudflare.steamstatic.com/public/images/economy/community/case_clutch.png" alt="Case">
+                <div class="case-name">Ember Case</div>
+                <div class="case-price"><i class="fa-solid fa-coins"></i> 1,500</div>
             </div>
-            <div class="skin-card rare-gold">
-                <span class="skin-wear">STATTRAK™/MW</span><span class="skin-chance">1.49%</span>
-                <img src="https://i.postimg.cc/mD368vX6/deagle.png" alt="skin">
-                <div class="skin-name">Desert Eagle</div><div class="skin-title">Calligraffiti</div>
-                <div class="skin-price">25 660 🪙</div>
+            <div class="case-card" onclick="openCaseView('Namangan Case')">
+                <img src="https://community.cloudflare.steamstatic.com/public/images/economy/community/case_cs2_weapon_case_3.png" alt="Case">
+                <div class="case-name">Namangan Case</div>
+                <div class="case-price"><i class="fa-solid fa-coins"></i> 2,000</div>
             </div>
         </div>
     </div>
 
-    <!-- TAB 4: PROFIL VA STATISTIKA -->
-    <div id="profile-page" class="tab-content">
-        <h2 style="margin-top:0;">👤 Профиль игрока</h2>
-        <div class="hero-section" style="background:#141c28; border-color:#232e44;">
-            <div style="font-size:20px; font-weight:bold;" id="user-display-name">Игрок</div>
-            <div style="font-size:12px; color:#64748b; margin-bottom:15px;" id="user-display-id">ID: 00000000</div>
-            <hr style="border:0; border-top:1px solid #1e293b; margin:15px 0;">
-            <div style="display:flex; justify-content:space-around;">
-                <div>
-                    <div style="font-size:22px; font-weight:800; color:#ffb703;" id="cases-count">0</div>
-                    <div style="font-size:11px; color:#64748b;">Кейсов открыто</div>
-                </div>
-                <div>
-                    <div style="font-size:22px; font-weight:800; color:#00e483;">Elite</div>
-                    <div style="font-size:11px; color:#64748b;">Ранг</div>
-                </div>
+    <div id="case-view-page" class="page">
+        <button onclick="switchPage('games-page')" style="background:none; border:none; color:white; font-size:16px;"><i class="fa-solid fa-arrow-left"></i> Orqaga</button>
+        <h2 id="current-case-title" style="text-align:center">Keys ichi</h2>
+        <div class="skins-grid" id="skins-container">
+            </div>
+    </div>
+
+    <div id="inventory-page" class="page">
+        <h2 style="text-align:center">Sizning skinlaringiz</h2>
+        <p style="color:var(--text-gray); text-align:center">Hozircha inventar bo'sh. Keys ochib skin yutib oling!</p>
+    </div>
+
+    <div id="profile-page" class="page">
+        <div class="profile-header">
+            <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" class="profile-avatar" id="tg-avatar">
+            <h3 id="tg-name">Telegram Foydalanuvchi</h3>
+            <p style="color:var(--text-gray)">ID: <span id="tg-id">Olinmoqda...</span></p>
+        </div>
+        <div class="bonus-section">
+            <div style="display:flex; justify-content:space-between; margin-bottom:10px;">
+                <span>Ochilgan keyslar soni:</span>
+                <span style="font-weight:bold; color:var(--accent-gold)">14 ta</span>
+            </div>
+            <div style="display:flex; justify-content:space-between;">
+                <span>Eng qimmat yutuq:</span>
+                <span style="font-weight:bold; color:#22c55e">AWP | Asiimov</span>
             </div>
         </div>
     </div>
 
-    <!-- 6. DEPOSIT MODAL DRAWER (Pastdan chiqadigan oyna) -->
-    <div class="modal-overlay" id="deposit-overlay" onclick="closeDepositDrawer()"></div>
-    <div class="deposit-drawer" id="deposit-drawer">
-        <span class="drawer-close" onclick="closeDepositDrawer()">×</span>
-        <h3 style="margin-top:0; color:#00e483;">Пополнение баланса</h3>
-        <p style="color:#64748b; font-size:13px; margin-bottom:20px;">Выберите платежную систему для моментальной покупки изумрудов:</p>
-        
-        <div class="pay-option" onclick="processPayment('HUMO')">
-            <span style="font-weight:800; color:#60efff;">HUMO CARD</span>
-            <span style="font-size:12px; color:#00e483; font-weight:bold;">Выбрать →</span>
-        </div>
-        <div class="pay-option" onclick="processPayment('UZCARD')">
-            <span style="font-weight:800; color:#3a86ff;">UZCARD TIZIMI</span>
-            <span style="font-size:12px; color:#00e483; font-weight:bold;">Выбрать →</span>
+    <div id="payment-modal" class="modal">
+        <div class="modal-content">
+            <h3>To'lov tizimini tanlang</h3>
+            <div class="payment-method" onclick="alert('Humo orqali tolov tizimiga otish...')">
+                <span>HUMO</span> <i class="fa-solid fa-credit-card" style="color:#2563eb"></i>
+            </div>
+            <div class="payment-method" onclick="alert('Uzcard orqali tolov tizimiga otish...')">
+                <span>UZCARD</span> <i class="fa-solid fa-credit-card" style="color:#0ea5e9"></i>
+            </div>
+            <button onclick="closeModal()" style="margin-top:15px; background:none; border:none; color:var(--text-gray); font-weight:bold;">Yopish</button>
         </div>
     </div>
 
-    <!-- FOZLY PASTKI MENU -->
     <div class="bottom-nav">
-        <div class="nav-item active" onclick="switchTab('main-dashboard')">
-            <span class="nav-icon">💎</span><span>Главная</span>
-        </div>
-        <div class="nav-item" onclick="switchTab('cases-list')">
-            <span class="nav-icon">🎲</span><span>Кейсы</span>
-        </div>
-        <div class="nav-item" onclick="switchTab('profile-page')">
-            <span class="nav-icon">👤</span><span>Профиль</span>
-        </div>
+        <div class="nav-item active" onclick="switchPage('home-page', this)"><i class="fa-solid fa-house"></i>Asosiy</div>
+        <div class="nav-item" onclick="switchPage('games-page', this)"><i class="fa-solid fa-dice"></i>O'yinlar</div>
+        <div class="nav-item" onclick="switchPage('inventory-page', this)"><i class="fa-solid fa-briefcase"></i>Inventar</div>
+        <div class="nav-item" onclick="switchPage('profile-page', this)"><i class="fa-solid fa-user"></i>Profil</div>
     </div>
 
     <script>
-        const tg = window.Telegram.WebApp;
-        tg.expand();
-
-        let balance = parseInt(localStorage.getItem('user_gems')) || 463;
-        let totalOpened = parseInt(localStorage.getItem('total_opened')) || 0;
-        let lastBonus = localStorage.getItem('last_bonus_time_pro');
-
-        document.getElementById('dash-balance').innerText = balance;
-        document.getElementById('cases-count').innerText = totalOpened;
-
-        // Telegram ma'lumotlarini o'rnatish
-        if(tg.initDataUnsafe && tg.initDataUnsafe.user) {
-            document.getElementById('user-display-name').innerText = tg.initDataUnsafe.user.first_name;
-            document.getElementById('user-display-id').innerText = "ID: " + tg.initDataUnsafe.user.id;
-        }
-
-        setupBonusTimer();
-
-        function switchTab(id) {
-            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
-            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
-            document.getElementById(id).classList.add('active');
+        // Sahifani almashtirish funksiyasi
+        function switchPage(pageId, element) {
+            document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
+            document.getElementById(pageId).classList.add('active');
             
-            document.querySelectorAll('.nav-item').forEach(item => {
-                if(item.getAttribute('onclick').includes(id)) item.classList.add('active');
-            });
-        }
-
-        function openDepositDrawer() {
-            document.getElementById('deposit-overlay').style.display = 'block';
-            document.getElementById('deposit-drawer').classList.add('open');
-        }
-
-        function closeDepositDrawer() {
-            document.getElementById('deposit-overlay').style.display = 'none';
-            document.getElementById('deposit-drawer').classList.remove('open');
-        }
-
-        function processPayment(type) {
-            alert(`Интеграция с платежной системой ${type} запущена в тестовом режиме через API.`);
-            closeDepositDrawer();
-        }
-
-        function viewCaseDetails(name, price) {
-            document.getElementById('selected-case-title').innerText = name + " Case";
-            document.getElementById('open-case-price').innerText = price;
-            switchTab('case-details');
-        }
-
-        function spinRoulette() {
-            let price = parseInt(document.getElementById('open-case-price').innerText);
-            if(balance >= price) {
-                balance -= price;
-                totalOpened += 1;
-                localStorage.setItem('user_gems', balance);
-                localStorage.setItem('total_opened', totalOpened);
-                document.getElementById('dash-balance').innerText = balance;
-                document.getElementById('cases-count').innerText = totalOpened;
-                alert("Кейс успешно открыт! Дроп добавлен в ваш инвентарь.");
-            } else {
-                alert("Недостаточно изумрудов! Нажмите 'Купить Изумруды' на главной.");
+            if(element) {
+                document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+                element.classList.add('active');
             }
         }
 
-        function triggerDailyBonus() {
-            let now = Date.now();
-            localStorage.setItem('last_bonus_time_pro', now);
-            lastBonus = now;
-            balance += 50;
-            localStorage.setItem('user_gems', balance);
-            document.getElementById('dash-balance').innerText = balance;
-            setupBonusTimer();
-            alert("Вы забрали +50 ежедневных изумрудов! 💎");
+        // Modal oynani ochish/yopish
+        function openModal() { document.getElementById('payment-modal').style.display = 'flex'; }
+        function closeModal() { document.getElementById('payment-modal').style.display = 'none'; }
+
+        // Kunlik bonus taymeri (24 soat)
+        function claimDailyBonus() {
+            let balance = parseInt(document.getElementById('user-balance').innerText);
+            balance += 100;
+            document.getElementById('user-balance').innerText = balance;
+
+            let endTime = new Date().getTime() + 24 * 60 * 60 * 1000;
+            localStorage.setItem('bonus_timer', endTime);
+            startTimer(endTime);
         }
 
-        function setupBonusTimer() {
-            if(lastBonus) {
-                const btn = document.getElementById('btn-daily-bonus');
-                const txt = document.getElementById('bonus-timer-text');
-                
-                let timer = setInterval(() => {
-                    let diff = (24 * 60 * 60 * 1000) - (Date.now() - parseFloat(lastBonus));
-                    if(diff <= 0) {
-                        clearInterval(timer);
-                        localStorage.removeItem('last_bonus_time_pro');
-                        btn.classList.add('ready'); btn.disabled = false; btn.innerText = "Взять";
-                        txt.innerText = "Получите изумруды бесплатно";
-                    } else {
-                        btn.classList.remove('ready'); btn.disabled = true;
-                        let h = Math.floor(diff / (1000*60*60));
-                        let m = Math.floor((diff % (1000*60*60)) / (1000*60));
-                        let s = Math.floor((diff % (1000*60)) / 1000);
-                        btn.innerText = `${h}ч ${m}м`;
-                        txt.innerText = `Следующий бонус через ${h}ч ${m}м ${s}с`;
+        function startTimer(endTime) {
+            const btn = document.getElementById('bonus-btn');
+            const timerDisplay = document.getElementById('timer');
+            btn.disabled = true;
+            timerDisplay.style.display = 'block';
+
+            let x = setInterval(function() {
+                let now = new Date().getTime();
+                let distance = endTime - now;
+
+                let hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                let minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                let seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+                timerDisplay.innerHTML = `Yangi bonusga: ${hours}soat ${minutes}daqiqa ${seconds}soniya`;
+
+                if (distance < 0) {
+                    clearInterval(x);
+                    btn.disabled = false;
+                    timerDisplay.style.display = 'none';
+                    localStorage.removeItem('bonus_timer');
+                }
+            }, 1000);
+        }
+
+        // Sahifa yuklanganda taymerni tekshirish
+        window.onload = function() {
+            let savedTimer = localStorage.getItem('bonus_timer');
+            if (savedTimer && new Date().getTime() < savedTimer) {
+                startTimer(parseInt(savedTimer));
+            }
+            
+            // Telegram foydalanuvchi ma'lumotlarini olish (Telegram WebApp ichida ishlaydi)
+            if (window.Telegram && window.Telegram.WebApp) {
+                const tg = window.Telegram.WebApp;
+                tg.expand(); // Ekran kengaytirish
+                if(tg.initDataUnsafe && tg.initDataUnsafe.user) {
+                    document.getElementById('tg-name').innerText = tg.initDataUnsafe.user.first_name;
+                    document.getElementById('tg-id').innerText = tg.initDataUnsafe.user.id;
+                    if(tg.initDataUnsafe.user.photo_url) {
+                        document.getElementById('tg-avatar').src = tg.initDataUnsafe.user.photo_url;
                     }
-                }, 1000);
+                }
             }
+        };
+
+        // Keys ichidagi qurol/skinlar API ro'yxati (Steam rasmlari bilan)
+        const fakeSkins = [
+            { name: "Desert Eagle | Trigger Discipline", price: "43 132", rate: "0.46%", img: "https://community.cloudflare.steamstatic.com/public/images/economy/community/5e201b7a956165e3cf70984a9e9c321d.png" },
+            { name: "Desert Eagle | Corinthian", price: "42 340", rate: "0.48%", img: "https://community.cloudflare.steamstatic.com/public/images/economy/community/8ee42fbdcf0f182c610b2df76fc87e83.png" },
+            { name: "Desert Eagle | Light Rail", price: "24 292", rate: "1.63%", img: "https://community.cloudflare.steamstatic.com/public/images/economy/community/c2a2cd2cd80da6a8d8719bc42bb6a9d7.png" },
+            { name: "Desert Eagle | Oxide Blaze", price: "17 317", rate: "2.6%", img: "https://community.cloudflare.steamstatic.com/public/images/economy/community/2e6cfba1e31d3d63b2f6ef5391c7a8b9.png" }
+        ];
+
+        function openCaseView(caseName) {
+            document.getElementById('current-case-title').innerText = caseName;
+            const container = document.getElementById('skins-container');
+            container.innerHTML = ''; // tozalash
+
+            fakeSkins.forEach(skin => {
+                container.innerHTML += `
+                    <div class="skin-card">
+                        <span style="background:rgba(0,0,0,0.4); padding:2px 5px; border-radius:5px; font-size:10px; float:right;">${skin.rate}</span>
+                        <div style="clear:both"></div>
+                        <img src="${skin.img}" alt="skin">
+                        <div style="font-weight:bold; margin-top:5px; min-height:32px;">${skin.name}</div>
+                        <div style="color:var(--accent-gold); margin-top:5px;"><i class="fa-solid fa-coins"></i> ${skin.price}</div>
+                    </div>
+                `;
+            });
+            switchPage('case-view-page');
         }
     </script>
 </body>
