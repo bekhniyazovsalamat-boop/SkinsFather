@@ -7,27 +7,27 @@
     <!-- Telegram WebApp Script -->
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
-        /* Umumiy ko'rinish va Neon Premium Dizayn */
+        /* Umumiy ko'rinish va Tiniq Neon Premium Dizayn */
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: radial-gradient(circle at top, #1a1f2c 0%, #0d1017 100%);
+            background: radial-gradient(circle at top, #161b26 0%, #080a0f 100%);
             color: #ffffff;
             margin: 0;
             padding: 0;
             user-select: none;
             overflow-x: hidden;
-            padding-bottom: 80px; /* Pastki menyu uchun joy */
+            padding-bottom: 90px;
         }
 
-        /* Tepadagi Header */
+        /* Tepadagi Tiniq Header */
         .header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             padding: 15px 20px;
-            background: rgba(20, 24, 33, 0.6);
-            backdrop-filter: blur(10px);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            background: rgba(20, 24, 33, 0.8);
+            backdrop-filter: blur(15px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
         }
 
         .logo {
@@ -38,31 +38,28 @@
             letter-spacing: 1px;
         }
 
-        .balance-container {
-            background: #1e2432;
+        .balance-badge {
+            background: linear-gradient(135deg, #1e2432 0%, #151924 100%);
             border: 1px solid #ffb703;
             border-radius: 20px;
-            padding: 6px 15px;
+            padding: 6px 14px;
             display: flex;
             align-items: center;
             gap: 8px;
-            box-shadow: 0 0 10px rgba(255, 183, 3, 0.2);
+            box-shadow: 0 0 12px rgba(255, 183, 3, 0.2);
+            cursor: pointer;
+            transition: 0.2s;
         }
 
-        .coin-icon {
-            font-size: 16px;
+        .balance-badge:active {
+            transform: scale(0.95);
         }
 
-        #coin-balance {
-            font-weight: 700;
-            color: #ffb703;
-        }
-
-        /* Tab (Sahifalar) tushunchasi */
+        /* Sahifalar (Tabs) mantiqi */
         .tab-content {
             display: none;
             padding: 20px;
-            animation: fadeIn 0.3s ease-in-out;
+            animation: fadeIn 0.25s ease-in-out;
         }
 
         .tab-content.active {
@@ -70,20 +67,58 @@
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
+            from { opacity: 0; transform: translateY(8px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* CASES TAB: Ruletka va Tugma */
+        /* Tugmalar va Kartochkalar uchun umumiy mukammallik */
+        .premium-card {
+            background: #121620;
+            border: 1px solid #22293a;
+            border-radius: 14px;
+            padding: 20px;
+            margin-bottom: 15px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+        }
+
+        .action-btn {
+            width: 100%;
+            background: linear-gradient(135deg, #00b4d8 0%, #0077b6 100%);
+            border: none;
+            border-radius: 12px;
+            padding: 15px;
+            color: white;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0, 180, 216, 0.3);
+            transition: 0.2s;
+        }
+
+        .action-btn:active { transform: scale(0.98); }
+        
+        .action-btn.gold {
+            background: linear-gradient(135deg, #ffb703 0%, #fb8500 100%);
+            color: #080a0f;
+            box-shadow: 0 4px 15px rgba(255, 183, 3, 0.3);
+        }
+
+        .action-btn.disabled {
+            background: #22293a !important;
+            color: #6c757d !important;
+            box-shadow: none !important;
+            cursor: not-allowed;
+        }
+
+        /* CASES TAB */
         .case-roulette {
             width: 100%;
-            height: 120px;
-            background: #141821;
-            border: 2px solid #2a3142;
-            border-radius: 12px;
+            height: 130px;
+            background: #0b0e14;
+            border: 2px solid #22293a;
+            border-radius: 14px;
             position: relative;
-            margin: 40px 0 20px 0;
-            overflow: hidden;
+            margin: 30px 0 20px 0;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -91,220 +126,163 @@
 
         .pointer {
             position: absolute;
-            top: 0;
-            bottom: 0;
-            width: 4px;
+            top: 0; bottom: 0; width: 4px;
             background: #ffb703;
             box-shadow: 0 0 15px #ffb703;
             z-index: 10;
         }
 
-        .roulette-placeholder {
-            color: #4e576c;
-            font-weight: 600;
-            font-size: 14px;
-            text-transform: uppercase;
+        /* DEPOSIT (Sotib olish) OYNASI */
+        .payment-method {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #171d2a;
+            border: 1px solid #2d374d;
+            border-radius: 10px;
+            padding: 12px 15px;
+            margin-top: 10px;
+        }
+
+        .payment-logo {
+            font-weight: 800;
+            font-size: 16px;
             letter-spacing: 1px;
         }
+        .humo { color: #00b4d8; }
+        .uzcard { color: #3a86ff; }
 
-        .open-btn {
-            width: 100%;
-            background: linear-gradient(135deg, #00b4d8 0%, #0077b6 100%);
-            border: none;
-            border-radius: 12px;
-            padding: 16px;
-            color: white;
-            font-size: 18px;
-            font-weight: 700;
-            cursor: pointer;
-            box-shadow: 0 4px 15px rgba(0, 180, 216, 0.4);
-            transition: 0.2s;
+        /* KUNLIK BONUS VA REFERAL (EARN) */
+        .bonus-timer-text {
+            font-size: 14px;
+            color: #ffb703;
+            font-weight: bold;
+            margin-top: 5px;
         }
 
-        .open-btn:active {
-            transform: scale(0.98);
-        }
-
-        .open-btn.disabled {
-            background: linear-gradient(135deg, #2b3240 0%, #1c212b 100%) !important;
-            color: #6c757d !important;
-            box-shadow: none !important;
-            cursor: not-allowed;
-            border: 1px solid #3d4659;
-        }
-
-        /* UPGRADE TAB */
-        .upgrade-card {
-            background: #141821;
-            border: 1px solid #2a3142;
-            border-radius: 12px;
-            padding: 20px;
-            text-align: center;
-            margin-top: 20px;
-        }
-
-        /* INVENTORY TAB */
-        .inventory-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 10px;
-            margin-top: 15px;
-        }
-
-        .inv-item {
-            background: #141821;
-            border: 1px solid #2a3142;
-            border-radius: 8px;
-            height: 90px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 12px;
-            color: #4e576c;
-        }
-
-        /* PROFILE TAB */
-        .profile-container {
-            background: #141821;
-            border: 1px solid #2a3142;
-            border-radius: 12px;
-            padding: 20px;
-            text-align: center;
-            margin-top: 20px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
-        }
-
+        /* PROFILE */
         .avatar {
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
-            background: #2a3142;
-            margin: 0 auto 15px auto;
-            border: 2px solid #ffb703;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 32px;
+            width: 85px; height: 85px; border-radius: 50%;
+            background: #22293a; margin: 0 auto 15px auto;
+            border: 2px solid #ffb703; display: flex;
+            align-items: center; justify-content: center; font-size: 32px;
         }
+        .avatar img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; }
 
-        .avatar img {
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
-            object-fit: cover;
-        }
-
-        .username {
-            font-size: 20px;
-            font-weight: 700;
-            margin-bottom: 5px;
-        }
-
-        .user-id {
-            font-size: 12px;
-            color: #6c757d;
-        }
-
-        /* PASTKI PROFESSIONAL NAVIGATION BAR */
+        /* PASTKI PROFESSIONAL MENU */
         .bottom-nav {
             position: fixed;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            background: rgba(13, 16, 23, 0.95);
-            border-top: 2px solid #1e2432;
+            bottom: 0; left: 0; width: 100%;
+            background: rgba(10, 13, 20, 0.96);
+            border-top: 1px solid #1c2230;
             display: flex;
             justify-content: space-around;
             padding: 12px 0;
-            box-shadow: 0 -8px 25px rgba(0, 0, 0, 0.6);
+            box-shadow: 0 -8px 30px rgba(0, 0, 0, 0.7);
             z-index: 1000;
         }
 
         .nav-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            color: #6c757d;
-            font-size: 11px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s ease-in-out;
-            width: 20%;
+            display: flex; flex-direction: column; align-items: center;
+            color: #5c677d; font-size: 11px; font-weight: 600;
+            cursor: pointer; transition: 0.2s; width: 20%;
         }
 
-        .nav-icon {
-            font-size: 22px;
-            margin-bottom: 3px;
-            transition: transform 0.2s;
-        }
-
-        /* Aktiv holatdagi menyu neon effekti */
-        .nav-item.active {
-            color: #ffb703;
-        }
-
-        .nav-item.active .nav-icon {
-            transform: translateY(-4px);
-            text-shadow: 0 0 10px rgba(255, 183, 3, 0.6);
-        }
+        .nav-icon { font-size: 22px; margin-bottom: 3px; }
+        .nav-item.active { color: #ffb703; }
+        .nav-item.active .nav-icon { transform: translateY(-3px); text-shadow: 0 0 10px rgba(255, 183, 3, 0.5); }
     </style>
 </head>
 <body>
 
-    <!-- Umumiy tepadagi panel (Balans hammasida ko'rinib turadi) -->
+    <!-- Tepadagi doimiy Header -->
     <div class="header">
         <div class="logo">SKINSFATHER</div>
-        <div class="balance-container">
+        <!-- Balansga bossa srazu depozit sahifasiga o'tadi -->
+        <div class="balance-badge" onclick="switchTab('deposit')">
             <span class="coin-icon">🪙</span>
             <span id="coin-balance">150</span>
+            <span style="color: #00b4d8; font-size: 12px; font-weight: 800; margin-left: 3px;">+</span>
         </div>
     </div>
 
-    <!-- 1. CASES TAB (Asosiy sahifa) -->
+    <!-- 1. CASES TAB -->
     <div id="cases" class="tab-content active">
         <div class="case-roulette">
             <div class="pointer"></div>
-            <div class="roulette-placeholder">Нажмите "ОТКРЫТЬ CASE"</div>
+            <div style="color: #4e576c; font-weight: 600; font-size: 14px; text-transform: uppercase;" id="roulette-status">Нажмите "ОТКРЫТЬ CASE"</div>
         </div>
-        <button id="open-btn" class="open-btn" onclick="openCase()">ОТКРЫТЬ ЗА 30 🪙</button>
+        <button id="open-btn" class="action-btn" onclick="openCase()">ОТКРЫТЬ ЗА 30 🪙</button>
+    </div>
+
+    <!-- 2. DEPOSIT TAB (Купить монеты) -->
+    <div id="deposit" class="tab-content">
+        <h2>🪙 Купить монеты (Депозит)</h2>
+        <p style="color: #6c757d; font-size: 14px; margin-bottom: 20px;">Выберите удобную платежную систему для пополнения баланса:</p>
         
-        <div style="margin-top: 25px; background: rgba(255,255,255,0.02); padding: 15px; border-radius: 10px; border: 1px dashed #2a3142;">
-            <span style="color: #6c757d; font-size: 13px;">💡 У вас кончились монеты? Они автоматически обновятся через 24 часа после полного обнуления баланса!</span>
+        <div class="premium-card">
+            <div class="payment-method">
+                <span class="payment-logo humo">HUMO</span>
+                <button class="action-btn" style="width: auto; padding: 6px 15px; font-size: 13px;" onclick="payAlert('HUMO')">Пополнить</button>
+            </div>
+            <div class="payment-method">
+                <span class="payment-logo uzcard">UZCARD</span>
+                <button class="action-btn" style="width: auto; padding: 6px 15px; font-size: 13px;" onclick="payAlert('UZCARD')">Пополнить</button>
+            </div>
+            <div class="payment-method">
+                <span class="payment-logo" style="color: #4caf50;">VISA / MASTER</span>
+                <button class="action-btn" style="width: auto; padding: 6px 15px; font-size: 13px;" onclick="payAlert('Visa')">Пополнить</button>
+            </div>
         </div>
     </div>
 
-    <!-- 2. UPGRADE TAB -->
-    <div id="upgrade" class="tab-content">
-        <h2>⚡ Улучшения (Upgrade)</h2>
-        <div class="upgrade-card">
-            <h3>Повысить удачу</h3>
-            <p style="color: #6c757d; font-size: 14px;">Увеличивает шанс на выпадение дорогих ножей на 15%</p>
-            <button class="open-btn" style="background: #ffb703; color: #0d1017; font-size: 14px; padding: 10px;">Скоро в игре</button>
+    <!-- 3. EARN TAB (Бонусы и Друзья) -->
+    <div id="earn" class="tab-content">
+        <h2>🎁 Бесплатные Монеты</h2>
+        
+        <!-- Ежедневный бонус -->
+        <div class="premium-card" style="text-align: center;">
+            <h3>Ежедневный бонус</h3>
+            <p style="color: #6c757d; font-size: 13px;">Получайте +50 монет каждые 24 часа!</p>
+            <button id="bonus-btn" class="action-btn gold" onclick="claimDailyBonus()">Получить 50 🪙</button>
+            <div id="bonus-timer" class="bonus-timer-text" style="display: none;"></div>
+        </div>
+
+        <!-- Рефералы -->
+        <div class="premium-card">
+            <h3>👥 Пригласить друзей</h3>
+            <p style="color: #6c757d; font-size: 13px;">Получайте +25 монет за каждого приглашенного друга в бот!</p>
+            <button class="action-btn" style="background: #2a3142;" onclick="shareLink()">Пригласить друга</button>
         </div>
     </div>
 
-    <!-- 3. INVENTORY TAB -->
+    <!-- 4. INVENTORY TAB -->
     <div id="inventory" class="tab-content">
-        <h2>🎒 Мой Инвентарь (0 шт)</h2>
-        <div class="inventory-grid">
-            <div class="inv-item">Пусто</div>
-            <div class="inv-item">Пусто</div>
-            <div class="inv-item">Пусто</div>
+        <h2>🎒 Мой Инвентарь</h2>
+        <div class="premium-card" style="text-align: center; color: #4e576c;">
+            Ваш инвентарь пока пуст. Открывайте кейсы!
         </div>
     </div>
 
-    <!-- 4. PROFILE TAB -->
+    <!-- 5. PROFILE TAB -->
     <div id="profile" class="tab-content">
         <h2>👤 Мой Профиль</h2>
-        <div class="profile-container">
+        <div class="premium-card" style="text-align: center;">
             <div class="avatar" id="user-avatar">👤</div>
-            <div class="username" id="user-name">Игрок</div>
-            <div class="user-id" id="user-id">ID: 00000000</div>
+            <div id="user-name" style="font-size: 20px; font-weight: 700; margin-bottom: 5px;">Игрок</div>
+            <div id="user-id" style="font-size: 12px; color: #6c757d; margin-bottom: 15px;">ID: 00000000</div>
             
-            <hr style="border: 0; border-top: 1px solid #2a3142; margin: 20px 0;">
-            <div style="display: flex; justify-content: space-around; font-size: 14px;">
-                <div>💼 Статус: <span style="color: #00b4d8;">В игре</span></div>
-                <div>🏆 Ранг: <span style="color: #ffb703;">Новичок</span></div>
+            <hr style="border: 0; border-top: 1px solid #22293a; margin: 15px 0;">
+            
+            <div style="display: flex; justify-content: space-around; text-align: center;">
+                <div>
+                    <div style="font-size: 20px; font-weight: bold; color: #ffb703;" id="stats-cases">0</div>
+                    <div style="font-size: 12px; color: #6c757d;">Кейсов открыто</div>
+                </div>
+                <div>
+                    <div style="font-size: 20px; font-weight: bold; color: #00b4d8;">Новичок</div>
+                    <div style="font-size: 12px; color: #6c757d;">Ваш Ранг</div>
+                </div>
             </div>
         </div>
     </div>
@@ -312,131 +290,143 @@
     <!-- PASTKI NAVIGATSIYA PANEL -->
     <div class="bottom-nav">
         <div class="nav-item active" onclick="switchTab('cases')">
-            <span class="nav-icon">📦</span>
-            <span class="nav-text">Кейсы</span>
+            <span class="nav-icon">📦</span><span class="nav-text">Кейсы</span>
         </div>
-        <div class="nav-item" onclick="switchTab('upgrade')">
-            <span class="nav-icon">⚡</span>
-            <span class="nav-text">Upgrade</span>
+        <div class="nav-item" onclick="switchTab('deposit')">
+            <span class="nav-icon">💳</span><span class="nav-text">Депозит</span>
+        </div>
+        <div class="nav-item" onclick="switchTab('earn')">
+            <span class="nav-icon">🎁</span><span class="nav-text">Бонусы</span>
         </div>
         <div class="nav-item" onclick="switchTab('inventory')">
-            <span class="nav-icon">🎒</span>
-            <span class="nav-text">Инвентарь</span>
+            <span class="nav-icon">🎒</span><span class="nav-text">Инвентарь</span>
         </div>
         <div class="nav-item" onclick="switchTab('profile')">
-            <span class="nav-icon">👤</span>
-            <span class="nav-text">Профиль</span>
+            <span class="nav-icon">👤</span><span class="nav-text">Профиль</span>
         </div>
     </div>
 
-    <!-- MANTIQ VAALGORITMLAR (JAVASCRIPT) -->
     <script>
-        // Telegram WebApp sozlamalari
         const tg = window.Telegram.WebApp;
-        tg.expand(); // Ekran to'liq ochiladi
+        tg.expand();
 
-        // Brauzer xotirasi bilan ishlash (LocalStorage)
+        // Xotiradan ma'lumotlarni o'qish
         let coins = parseInt(localStorage.getItem('user_coins')) || 150;
-        let lastResetTime = localStorage.getItem('cooldown_start_time');
+        let casesOpened = parseInt(localStorage.getItem('cases_opened')) || 0;
+        let lastBonusTime = localStorage.getItem('last_bonus_time');
 
-        // Boshlang'ich yuklashda balans va profillarni ekranga chiqarish
+        // Boshlang'ich qiymatlarni ekranga yuklash
         document.getElementById('coin-balance').innerText = coins;
+        document.getElementById('stats-cases').innerText = casesOpened;
+        
         loadTelegramProfile();
-        checkCooldownOnLoad();
+        checkDailyBonusCooldown();
 
-        // 1. Sahifalarni o'zgartirish mantiqi
+        // 1. Sahifalarni almashtirish (Tab switcher)
         function switchTab(tabId) {
-            // Hamma sahifalarni yopish
             document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
-            // Hamma menyularni aktivlikdan olish
             document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
 
-            // Tanlangan sahifani ochish
             document.getElementById(tabId).classList.add('active');
-            // Tanlangan menyuni yoritish
-            event.currentTarget.classList.add('active');
+            
+            // Pastki menyuni yoritish mantiqi
+            document.querySelectorAll('.nav-item').forEach(item => {
+                if(item.getAttribute('onclick').includes(tabId)) {
+                    item.classList.add('active');
+                }
+            });
         }
 
-        // 2. Telegramdan ma'lumotlarni olish
+        // 2. Telegram Ma'lumotlari
         function loadTelegramProfile() {
             if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
                 const user = tg.initDataUnsafe.user;
                 document.getElementById('user-name').innerText = user.first_name + (user.last_name ? ' ' + user.last_name : '');
                 document.getElementById('user-id').innerText = "ID: " + user.id;
-                
                 if (user.photo_url) {
-                    document.getElementById('user-avatar').innerHTML = `<img src="${user.photo_url}" alt="Avatar">`;
+                    document.getElementById('user-avatar').innerHTML = `<img src="${user.photo_url}">`;
                 }
             }
         }
 
-        // 3. Keys ochish funksiyasi
+        // 3. Keys ochish va Profil Statistikasini yangilash
         function openCase() {
             if (coins >= 30) {
                 coins -= 30;
-                updateCoins(coins);
+                casesOpened += 1;
+                
+                // Balans va statistikani saqlash
+                localStorage.setItem('user_coins', coins);
+                localStorage.setItem('cases_opened', casesOpened);
+                
+                document.getElementById('coin-balance').innerText = coins;
+                document.getElementById('stats-cases').innerText = casesOpened;
 
-                // Bu yerga ruletka aylanish animatsiyasi kodini qo'shsa bo'ladi
-                document.querySelector('.roulette-placeholder').innerText = "Открытие... 🎉";
+                document.getElementById('roulette-status').innerText = "ОТКРЫТИЕ... 🎉";
                 setTimeout(() => {
-                    document.querySelector('.roulette-placeholder').innerText = "Кейс открыт!";
-                }, 1000);
-
-                // Agar tangalar 0 bo'lib qolsa yoki 30 dan kamayib ketsa — bloklash vaqtini yoqamiz
-                if (coins < 30) {
-                    start24HourCooldown();
-                }
+                    document.getElementById('roulette-status').innerText = "КЕЙС ОТКРЫТ!";
+                }, 800);
+            } else {
+                alert("Недостаточно монет! Перейдите в раздел Бонусы или Депозит.");
             }
         }
 
-        // Balansni yangilash va xotiraga saqlash
-        function updateCoins(newBalance) {
-            coins = newBalance;
-            document.getElementById('coin-balance').innerText = coins;
-            localStorage.setItem('user_coins', coins);
-        }
-
-        // 4. 24 soatlik Taymer Tizimi
-        function start24HourCooldown() {
+        // 4. Ежедневный бонус taymer tizimi (Shotbot kabi)
+        function claimDailyBonus() {
             let now = Date.now();
-            localStorage.setItem('cooldown_start_time', now);
-            lastResetTime = now;
-            runTimer();
+            localStorage.setItem('last_bonus_time', now);
+            lastBonusTime = now;
+            
+            coins += 50;
+            localStorage.setItem('user_coins', coins);
+            document.getElementById('coin-balance').innerText = coins;
+
+            checkDailyBonusCooldown();
+            alert("Вы получили 50 бесплатных монет! 🎉");
         }
 
-        function checkCooldownOnLoad() {
-            if (lastResetTime && coins < 30) {
-                runTimer();
+        function checkDailyBonusCooldown() {
+            if (lastBonusTime) {
+                const btn = document.getElementById('bonus-btn');
+                const timerDiv = document.getElementById('bonus-timer');
+                
+                let interval = setInterval(() => {
+                    let now = Date.now();
+                    let timeLeft = (24 * 60 * 60 * 1000) - (now - parseFloat(lastBonusTime));
+
+                    if (timeLeft <= 0) {
+                        clearInterval(interval);
+                        localStorage.removeItem('last_bonus_time');
+                        btn.classList.remove('disabled');
+                        btn.disabled = false;
+                        timerDiv.style.display = 'none';
+                    } else {
+                        btn.classList.add('disabled');
+                        btn.disabled = true;
+                        timerDiv.style.display = 'block';
+
+                        let hours = Math.floor(timeLeft / (1000 * 60 * 60));
+                        let minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+                        let seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
+
+                        timerDiv.innerText = `Следующий бонус через: ${hours}ч ${minutes}м ${seconds}с`;
+                    }
+                }, 1000);
             }
         }
 
-        function runTimer() {
-            const btn = document.getElementById('open-btn');
-            btn.classList.add('disabled');
-            btn.disabled = true;
+        // 5. To'lov tizimlari bosilganda chiqadigan xabar
+        function payAlert(system) {
+            alert(`Система пополнения через ${system} настраивается. В скором времени платежи будут автоматизированы через Payme/Click!`);
+        }
 
-            let interval = setInterval(() => {
-                let now = Date.now();
-                let passedTime = now - parseFloat(lastResetTime);
-                let duration24Hours = 24 * 60 * 60 * 1000; // 24 soat millisekundlarda
-                let timeLeft = duration24Hours - passedTime;
-
-                if (timeLeft <= 0) {
-                    clearInterval(interval);
-                    localStorage.removeItem('cooldown_start_time');
-                    btn.classList.remove('disabled');
-                    btn.disabled = false;
-                    btn.innerText = "ОТКРЫТЬ ЗА 30 🪙";
-                    updateCoins(150); // Tangalarni to'ldirish
-                } else {
-                    let hours = Math.floor(timeLeft / (1000 * 60 * 60));
-                    let minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
-                    let seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
-
-                    // Tugma ichida taymerni jonli ko'rsatib turish
-                    btn.innerText = `Ждите: ${hours}ч ${minutes}м ${seconds}с`;
-                }
-            }, 1000);
+        // 6. Referal silkasini ulashish
+        function shareLink() {
+            let botUsername = "skinsfather_bot"; // Botizni aniq username'ini yozing
+            let userId = tg.initDataUnsafe.user ? tg.initDataUnsafe.user.id : "12345";
+            let shareUrl = `https://t.me/${botUsername}?start=ref_${userId}`;
+            
+            tg.openTelegramLink(`https://t.me/share/url?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent("🔥 Заходи в SkinsFather, открывай кейсы CS2 и получай бонусы вместе со мной!")}`);
         }
     </script>
 </body>
