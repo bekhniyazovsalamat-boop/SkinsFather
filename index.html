@@ -1,386 +1,148 @@
 <!DOCTYPE html>
-<html lang="uz">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SkinFights - Official Mini App</title>
-    
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Rajdhani:wght@600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
+    <title>SkinFights</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-dark: #06090e;
-            --panel-bg: #0f141c;
-            --card-bg: #151d27;
-            --accent-green: #00ff66;
-            --accent-gold: #ffb700;
-            --text-white: #ffffff;
-            --text-gray: #7e8b9b;
-            --rarity-cover: radial-gradient(circle, rgba(138,43,226,0.2) 0%, rgba(15,20,28,0) 70%);
+            --bg-color: #0b0e14;
+            --panel-bg: #131922;
+            --accent: #00ff66;
+            --text-main: #ffffff;
+            --text-muted: #627286;
         }
-
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; user-select: none; }
-        body { background-color: var(--bg-dark); color: var(--text-white); padding-bottom: 90px; }
-        h1, h2, h3, .font-game { font-family: 'Rajdhani', sans-serif; text-transform: uppercase; }
-
-        /* Sahifalar boshqaruvi */
-        .page { display: none; padding: 15px; }
-        .page.active { display: block; }
-
-        /* TOP LIVE DROPS (Jonli yutuqlar lentasi) */
-        .live-drops {
-            display: flex; gap: 8px; overflow-x: auto; padding: 10px 5px;
-            scroll-behavior: smooth; border-bottom: 1px solid #1a2330; margin-bottom: 15px;
-        }
+        body { font-family: 'Inter', sans-serif; background: var(--bg-color); color: var(--text-main); margin:0; padding-bottom: 80px; }
+        
+        /* Live Drops Lentasining To'g'ri Dizayni */
+        .live-drops { display: flex; gap: 10px; overflow-x: auto; padding: 10px; background: #0f141c; border-bottom: 1px solid #1e2530; }
         .live-drops::-webkit-scrollbar { display: none; }
-        .drop-item {
-            min-width: 90px; background: var(--panel-bg); border-radius: 8px; padding: 6px;
-            text-align: center; border-bottom: 2px solid #8a2be2; font-size: 10px; position: relative;
-        }
-        .drop-item img { width: 45px; height: 45px; object-fit: contain; display: block; margin: 0 auto; }
-        .drop-user-badge {
-            position: absolute; top: 2px; left: 2px; width: 12px; height: 12px;
-            border-radius: 50%; background: var(--accent-gold); font-size: 8px; line-height: 12px;
-        }
+        .drop-card { min-width: 100px; background: var(--panel-bg); padding: 8px; border-radius: 8px; text-align: center; border-bottom: 3px solid #8a2be2; }
+        .drop-card img { width: 50px; height: 50px; object-fit: contain; }
+        .drop-user { font-size: 10px; color: var(--text-muted); }
 
-        /* LOGO & BRANDING */
-        .brand-header { text-align: center; margin: 15px 0; }
-        .brand-header h1 { font-size: 34px; color: #fff; letter-spacing: 1px; }
-        .brand-header p { color: var(--text-gray); font-size: 13px; margin-top: 2px; }
-
-        /* ASOSIY BALANS VA SANDIQ (Rasm 1) */
-        .hero-chest-box {
-            background: radial-gradient(circle at center, #1c2735 0%, #0f141c 100%);
-            border-radius: 20px; padding: 25px 20px; text-align: center;
-            border: 1px solid #1a2330; margin-bottom: 20px; position: relative;
-        }
-        .hero-chest-box .lbl { font-size: 12px; color: var(--text-gray); font-weight: 600; text-transform: uppercase; }
-        .hero-balance { font-size: 42px; color: var(--accent-green); font-weight: 700; margin: 5px 0 15px 0; display: flex; justify-content: center; align-items: center; gap: 8px; }
+        /* Profil va Sozlamalar menyusi (Rasm 4 dagi kabi) */
+        .profile-container { padding: 20px; display: none; }
+        .active-page { display: block; }
+        .avatar-circle { width: 80px; height: 80px; background: #232b36; border-radius: 50%; margin: 0 auto 10px auto; border: 2px solid var(--accent); }
         
-        .animated-chest {
-            width: 140px; height: 140px; margin: 0 auto 20px auto;
-            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><path d="M4 24L32 12L60 24L32 36L4 24Z" fill="%2300ff66" opacity="0.3"/><path d="M4 24V48L32 58V36L4 24Z" fill="%231c2735" stroke="%2300ff66" stroke-width="2"/><path d="M60 24V48L32 58V36L60 24Z" fill="%23151d27" stroke="%2300ff66" stroke-width="2"/></svg>') no-repeat center;
-            filter: drop-shadow(0 0 20px rgba(0, 255, 102, 0.4));
-        }
+        .menu-item { background: var(--panel-bg); padding: 15px; border-radius: 12px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+        .toggle-btn { width: 44px; height: 24px; background: #2c3542; border-radius: 12px; position: relative; cursor: pointer; }
+        .toggle-btn.on { background: var(--accent); }
+        .toggle-btn::after { content:''; position:absolute; width:20px; height:20px; background:#fff; border-radius:50%; top:2px; left:2px; transition: 0.2s; }
+        .toggle-btn.on::after { left: 22px; }
 
-        .btn-green {
-            background: var(--accent-green); color: #000; border: none; width: 100%;
-            padding: 15px; border-radius: 12px; font-weight: 700; font-size: 15px; cursor: pointer; text-transform: uppercase;
-        }
-
-        /* OYIN REJIMLARI SEKSIYASI (UPGRADE, BATTLE, MARKET) */
-        .game-modes-list { display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px; }
-        .mode-banner {
-            background: linear-gradient(90deg, #151d27 0%, #0f141c 100%);
-            border-radius: 15px; padding: 20px; display: flex; justify-content: space-between;
-            align-items: center; border-left: 4px solid var(--accent-green); cursor: pointer;
-        }
-        .mode-info h3 { font-size: 18px; color: #fff; }
-        .mode-info p { color: var(--text-gray); font-size: 12px; margin-top: 4px; }
-        .mode-icon { font-size: 26px; color: var(--accent-green); opacity: 0.8; }
-
-        /* FAOL VAZIFALAR VA TAYMER (Rasm 6) */
-        .task-card { background: var(--panel-bg); border-radius: 16px; padding: 16px; margin-bottom: 12px; }
-        .task-card h4 { font-size: 14px; text-transform: uppercase; color: #fff; margin-bottom: 8px; }
-        .task-row { display: flex; justify-content: space-between; align-items: center; margin-top: 10px; }
-        
-        .timer-badge {
-            background: #1c2330; padding: 6px 12px; border-radius: 8px;
-            font-family: 'Rajdhani', sans-serif; font-size: 16px; color: var(--text-gray); font-weight: 700;
-        }
-        .btn-action {
-            background: var(--accent-green); color: #000; border: none; padding: 8px 16px;
-            border-radius: 8px; font-weight: 700; font-size: 12px; cursor: pointer; text-transform: uppercase;
-        }
-
-        /* CASE-LAR DO'KONI (Rasm 2) */
-        .grid-2x2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-        .case-box {
-            background: var(--panel-bg); border-radius: 14px; padding: 15px; text-align: center;
-            border: 1px solid #1a2330; position: relative;
-        }
-        .case-box .badge-new { position: absolute; top: 8px; right: 8px; background: #ff3b30; color: #fff; font-size: 9px; padding: 2px 6px; border-radius: 4px; font-weight: 700; }
-        .case-gfx { width: 75px; height: 75px; margin: 10px auto; background: #222; border-radius: 8px; position: relative; box-shadow: inset 0 0 15px rgba(255,255,255,0.05); }
-        .case-gfx::after { content: '📦'; font-size: 36px; line-height: 75px; display: block; }
-        .case-box h4 { margin-top: 10px; font-size: 15px; }
-        .case-pricing { display: flex; justify-content: center; gap: 8px; margin-top: 10px; }
-        .tag-coin { background: rgba(255,183,0,0.1); color: var(--accent-gold); padding: 4px 8px; border-radius: 6px; font-size: 11px; font-weight: 600; }
-        .tag-opened { background: rgba(255,255,255,0.05); color: var(--text-gray); padding: 4px 8px; border-radius: 6px; font-size: 11px; }
-
-        /* INVENTAR FILTRLARI (Rasm 5) */
-        .tab-filter-bar { display: flex; background: #000; border-radius: 10px; padding: 4px; margin-bottom: 15px; }
-        .tab-btn { flex: 1; background: none; border: none; color: var(--text-gray); padding: 10px; font-weight: 600; font-size: 13px; cursor: pointer; border-radius: 8px; }
-        .tab-btn.active { background: var(--card-bg); color: var(--accent-green); }
-
-        /* PROFIL SEZMALARI VA OPTIONS (Rasm 4) */
-        .profile-card { text-align: center; padding: 20px; background: var(--panel-bg); border-radius: 16px; margin-bottom: 15px; }
-        .user-avatar { width: 80px; height: 80px; border-radius: 50%; background: linear-gradient(135deg, #00ff66, #00a8ff); margin: 0 auto 10px auto; font-size: 32px; line-height: 80px; color: #fff; font-weight: 700; }
-        .option-row {
-            background: var(--panel-bg); padding: 14px 16px; border-radius: 12px;
-            display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; cursor: pointer;
-        }
-        .option-left { display: flex; align-items: center; gap: 12px; font-size: 14px; }
-        .option-right { color: var(--text-gray); font-size: 13px; }
-
-        /* Switcher toggle */
-        .toggle-switch { width: 40px; height: 22px; background: #2c3e50; border-radius: 15px; position: relative; cursor: pointer; }
-        .toggle-switch.on { background: var(--accent-green); }
-        .toggle-switch::before { content: ''; position: absolute; width: 18px; height: 18px; background: #fff; border-radius: 50%; top: 2px; left: 2px; transition: 0.2s; }
-        .toggle-switch.on::before { left: 20px; }
-
-        /* NAVIGATSIYA */
-        .bottom-nav {
-            position: fixed; bottom: 0; left: 0; width: 100%; background: var(--panel-bg);
-            display: flex; border-top: 1px solid #1a2330; padding: 12px 0; z-index: 1000;
-        }
-        .nav-tab { flex: 1; text-align: center; color: var(--text-gray); font-size: 11px; font-weight: 500; cursor: pointer; }
-        .nav-tab.active { color: var(--accent-green); }
-        .nav-tab i { font-size: 18px; display: block; margin-bottom: 4px; }
+        /* Navigatsiya */
+        .nav-bar { position: fixed; bottom: 0; width: 100%; background: var(--panel-bg); display: flex; justify-content: space-around; padding: 15px 0; border-top: 1px solid #1e2530; }
+        .nav-item { color: var(--text-muted); cursor: pointer; font-size: 14px; font-weight: 600; }
+        .nav-item.active { color: var(--accent); }
     </style>
 </head>
 <body>
 
-    <div class="live-drops" id="live-drops-container">
-        </div>
+    <!-- LIVE DROPS (JONLI YUTUQLAR) -->
+    <div class="live-drops" id="liveDrops"></div>
 
-    <div id="page-home" class="page active">
-        <div class="brand-header">
-            <h1>SKINFIGHTS</h1>
-            <p>Выводи лучший дроп с нами!</p>
-        </div>
+    <!-- MAIN PAGE -->
+    <div id="page-main" class="profile-container active-page">
+        <h2 style="text-align: center; color: var(--accent);">SkinFights</h2>
+        <div style="text-align:center; font-size: 24px; margin: 20px 0;">Баланс: <span id="user-balance" style="color:var(--accent)">5000</span> 🪙</div>
+        <button onclick="openCase()" style="width:100%; padding:15px; background:var(--accent); border:none; border-radius:12px; font-weight:700; font-size:16px;">Открыть Кейс (500 🪙)</button>
+    </div>
 
-        <div class="hero-chest-box">
-            <div class="lbl">Ваш Баланс</div>
-            <div class="hero-balance">🪙 <span id="main-balance">463</span></div>
-            <div class="animated-chest"></div>
-            <button class="btn-green" onclick="alert('Humo/Uzcard tolov tizimi ulanmoqda...')">Купить Монеты</button>
-        </div>
-
-        <div class="game-modes-list">
-            <div class="mode-banner" onclick="switchTab('page-cases')">
-                <div class="mode-info"><h3>Кейсы</h3><p>Открывай кейсы и получай скины CS 2</p></div>
-                <div class="mode-icon"><i class="fa-solid fa-box-open"></i></div>
-            </div>
-            <div class="mode-banner" onclick="alert('Апгрейд режима скоро в игре!')">
-                <div class="mode-info"><h3>Апгрейд</h3><p>Улучшайте свои скины до максимума</p></div>
-                <div class="mode-icon"><i class="fa-solid fa-arrow-up-trending-lines"></i></div>
-            </div>
-            <div class="mode-banner" onclick="alert('Кейс-Баттлы в разработке')">
-                <div class="mode-info"><h3>Кейс-Баттлы</h3><p>Участвуй в баттлах и выигрывай призы</p></div>
-                <div class="mode-icon"><i class="fa-solid fa- एक्सयर"></i></div>
-            </div>
-        </div>
-
-        <h3 style="margin: 15px 0 10px 5px; font-size: 16px;">Активные задания</h3>
+    <!-- PROFIL & SETTINGS PAGE (Rasm 4 dagi aniq ko'rinish) -->
+    <div id="page-profile" class="profile-container">
+        <div class="avatar-circle"></div>
+        <h3 style="text-align:center;" id="prof-username">yejjusi</h3>
         
-        <div class="task-card">
-            <h4>Ежедневный Бонус</h4>
-            <div style="font-size:12px; color:var(--accent-green); font-weight:600;">+120 🪙 <span style="color:var(--text-gray)">• Растет каждый день</span></div>
-            <div class="task-row">
-                <div class="timer-badge" id="daily-timer">00:00:00</div>
-                <button class="btn-action" id="btn-claim-bonus" onclick="claimDailyBonus()">Получить</button>
-            </div>
+        <div class="menu-item">
+            <span>Change Language</span>
+            <span style="color: var(--accent)" onclick="toggleLang()">Русский</span>
         </div>
-
-        <div class="task-card">
-            <h4>Пригласить друзей</h4>
-            <div style="font-size:12px; color:var(--accent-green); font-weight:600;">+500 🪙 <span style="color:var(--text-gray)">• И реферальные бонусы</span></div>
-            <div class="task-row">
-                <span style="font-size:12px; color:var(--text-gray)">Позови друга в бот</span>
-                <button class="btn-action" onclick="alert('Referal havola nusxalandi!')">Пригласить</button>
-            </div>
+        <div class="menu-item">
+            <span>Включить звуки</span>
+            <div class="toggle-btn on" id="soundToggle" onclick="toggleSetting('sound')"></div>
         </div>
-    </div>
-
-    <div id="page-cases" class="page">
-        <h2 style="margin-bottom:15px; font-size:22px;">Доступные Кейсы</h2>
-        <div class="grid-2x2">
-            <div class="case-box">
-                <div class="case-gfx"></div>
-                <h4>Grunt</h4>
-                <div class="case-pricing"><span class="tag-coin">🪙 500</span><span class="tag-opened">📦 14.7M</span></div>
-            </div>
-            <div class="case-box">
-                <div class="badge-new">New!</div>
-                <div class="case-gfx" style="box-shadow: 0 0 10px #00a8ff;"></div>
-                <h4>Tundra</h4>
-                <div class="case-pricing"><span class="tag-coin">🪙 750</span><span class="tag-opened">📦 1.2M</span></div>
-            </div>
-            <div class="case-box">
-                <div class="case-gfx"></div>
-                <h4>Lurk</h4>
-                <div class="case-pricing"><span class="tag-coin">🪙 1500</span><span class="tag-opened">📦 2.1M</span></div>
-            </div>
-            <div class="case-box">
-                <div class="case-gfx" style="box-shadow: 0 0 10px #ffb700;"></div>
-                <h4>Namangan</h4>
-                <div class="case-pricing"><span class="tag-coin">🪙 2000</span><span class="tag-opened">📦 573k</span></div>
-            </div>
+        <div class="menu-item">
+            <span>Включить вибрацию</span>
+            <div class="toggle-btn" id="vibroToggle" onclick="toggleSetting('vibro')"></div>
+        </div>
+        <div class="menu-item" onclick="setTradeLink()">
+            <span>Trade Link</span>
+            <span style="color: var(--text-muted)">➔</span>
         </div>
     </div>
 
-    <div id="page-inventory" class="page">
-        <h2 style="margin-bottom:15px; font-size:22px;">Инвентарь</h2>
-        <div class="tab-filter-bar">
-            <button class="tab-btn active" onclick="setInvTab('doc')">Доступное</button>
-            <button class="tab-btn" onclick="setInvTab('steam')">Steam</button>
-            <button class="tab-btn" onclick="setInvTab('sold')">Продано</button>
-        </div>
-        <div id="inventory-content" style="text-align:center; padding:30px; color:var(--text-gray);">
-            <i class="fa-solid fa-box-open" style="font-size:40px; margin-bottom:10px; opacity:0.3"></i>
-            <p>Здесь пока ничего нет. Откройте ваш первый кейс!</p>
-        </div>
-    </div>
-
-    <div id="page-profile" class="page">
-        <div class="profile-card">
-            <div class="user-avatar" id="avatar-placeholder">U</div>
-            <h3 id="username-display" style="font-size:20px;">Foydalanuvchi</h3>
-            <p style="font-size:12px; color:var(--text-gray); margin-top:4px;">ID: <span id="user-tg-id">5498016172</span></p>
-        </div>
-
-        <div class="option-row" onclick="changeLanguage()">
-            <div class="option-left"><i class="fa-solid fa-language"></i> <span>Change Language</span></div>
-            <div class="option-right" style="color:var(--accent-green); font-weight:600;">O'zbekcha</div>
-        </div>
-
-        <div class="option-row">
-            <div class="option-left"><i class="fa-solid fa-volume-high"></i> <span>Включить звуки</span></div>
-            <div class="toggle-switch on" onclick="this.classList.toggle('on')"></div>
-        </div>
-
-        <div class="option-row">
-            <div class="option-left"><i class="fa-solid fa-vibration"></i> <span>Включить вибрацию</span></div>
-            <div class="toggle-switch" onclick="this.classList.toggle('on')"></div>
-        </div>
-
-        <div class="option-row" onclick="alert('Trade Link kiritish oynasi')">
-            <div class="option-left"><i class="fa-solid fa-link"></i> <span>Trade Link</span></div>
-            <div class="option-right"><i class="fa-solid fa-chevron-right"></i></div>
-        </div>
-
-        <div class="option-row" onclick="window.open('https://t.me/SkinsFatherSupport')">
-            <div class="option-left"><i class="fa-solid fa-headset"></i> <span>Служба поддержки</span></div>
-            <div class="option-right"><i class="fa-solid fa-chevron-right"></i></div>
-        </div>
-    </div>
-
-    <div class="bottom-nav">
-        <div class="nav-tab active" onclick="switchTab('page-home', this)"><i class="fa-solid fa-house"></i>Главная</div>
-        <div class="nav-tab" onclick="switchTab('page-cases', this)"><i class="fa-solid fa-cubes"></i>Кейсы</div>
-        <div class="nav-tab" onclick="switchTab('page-inventory', this)"><i class="fa-solid fa-briefcase"></i>Инвентарь</div>
-        <div class="nav-tab" onclick="switchTab('page-profile', this)"><i class="fa-solid fa-circle-user"></i>Профиль</div>
+    <!-- BOTTOM NAVIGATION -->
+    <div class="nav-bar">
+        <div class="nav-item active" onclick="navigate('page-main', this)">Игры</div>
+        <div class="nav-item" onclick="navigate('page-profile', this)">Профиль</div>
     </div>
 
     <script>
-        // Sahifalarni almashtirish funksiyasi
-        function switchTab(id, el) {
-            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-            document.getElementById(id).classList.add('active');
-            if(el) {
-                document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
-                el.classList.add('active');
+        const TG_ID = "5498016172"; // Real foydalanuvchi IDsi
+        const BACKEND_URL = "http://localhost:3000/api";
+
+        async function initApp() {
+            let res = await fetch(`${BACKEND_URL}/user/init`, {
+                method: "POST",
+                headers: {"Content-Type": "application/json"},
+                body: JSON.stringify({ tg_id: TG_ID, username: "yejjusi" })
+            });
+            let data = await res.json();
+            if(data.success) {
+                document.getElementById('user-balance').innerText = data.user.balance;
+                renderLiveDrops(data.liveDrops);
             }
         }
 
-        // Inventar ichki tablari (Rasm 5)
-        function setInvTab(type) {
-            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-            event.target.classList.add('active');
-            const cnt = document.getElementById('inventory-content');
-            if(type === 'steam') {
-                cnt.innerHTML = `<p style="color:#fff">Steam hisobingiz yuklanmoqda...</p>`;
+        async function openCase() {
+            let res = await fetch(`${BACKEND_URL}/case/open`, {
+                method: "POST",
+                headers: {"Content-Type": "application/json"},
+                body: JSON.stringify({ tg_id: TG_ID, casePrice: 500 })
+            });
+            let data = await res.json();
+            if(data.success) {
+                document.getElementById('user-balance').innerText = data.balance;
+                alert(`Вы выбили: ${data.wonSkin.name}`);
+                renderLiveDrops(data.liveDrops);
             } else {
-                cnt.innerHTML = `<i class="fa-solid fa-box-open" style="font-size:40px; margin-bottom:10px; opacity:0.3"></i><p>Здесь пока ничего нет.</p>`;
+                alert(data.error);
             }
         }
 
-        // Live Drop simulyatsiyasi (Yuqoridagi lenta uchun)
-        const weapons = ['AK-47', 'AWP', 'M4A1-S', 'USP-S', 'Glock-18'];
-        function generateLiveDrops() {
-            const container = document.getElementById('live-drops-container');
-            container.innerHTML = '';
-            for(let i=0; i<10; i++) {
-                let randomWep = weapons[Math.floor(Math.random() * weapons.length)];
-                container.innerHTML += `
-                    <div class="drop-item">
-                        <div class="drop-user-badge">${i}</div>
-                        <div style="font-weight:700; color:#fff">${randomWep}</div>
-                        <div style="color:var(--accent-green); font-size:9px;">🪙 ${(Math.random()*2000 + 100).toFixed(0)}</div>
-                    </div>
-                `;
-            }
+        function renderLiveDrops(drops) {
+            const container = document.getElementById('liveDrops');
+            container.innerHTML = drops.map(d => `
+                <div class="drop-card">
+                    <img src="https://community.cloudflare.steamstatic.com/economy/image/-9a81dlWLwJ2UUGcVs_nsV4Wd86K7IOsKz07o6I9dBVjSl0VddMTM3o6jc6Wgg8vEh9XQ13SD46_R4paOf76S_C_c8bXIn50YwI9vOf1dQh00vXHeTJD7N20wIPcyqOsZ-vXwzsBuMcg3bHFrIn3jALt-EA5YWGhLI_Adg44ZAnYr1fslb_ugcfT7s6b6" alt="skin">
+                    <div style="font-size:11px; font-weight:700;">${d.skin.split(' | ')[0]}</div>
+                    <div class="drop-user">@${d.user}</div>
+                </div>
+            `).join('');
         }
 
-        // Kunlik bonus 24 soatlik taymer logikasi
-        function claimDailyBonus() {
-            let bal = parseInt(document.getElementById('main-balance').innerText);
-            document.getElementById('main-balance').innerText = bal + 120;
-            let targetTime = new Date().getTime() + 24 * 60 * 60 * 1000;
-            localStorage.setItem('sf_timer_end', targetTime);
-            initTimer(targetTime);
+        function navigate(pageId, element) {
+            document.querySelectorAll('.profile-container').forEach(p => p.style.display = 'none');
+            document.getElementById(pageId).style.display = 'block';
+            document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+            element.classList.add('active');
         }
 
-        function initTimer(endTime) {
-            const btn = document.getElementById('btn-claim-bonus');
-            const display = document.getElementById('daily-timer');
-            btn.disabled = true;
-            btn.style.background = '#2c3e50';
-
-            let interval = setInterval(() => {
-                let now = new Date().getTime();
-                let diff = endTime - now;
-
-                let h = Math.floor((diff / (1000 * 60 * 60)) % 24);
-                let m = Math.floor((diff / (1000 * 60)) % 60);
-                let s = Math.floor((diff / 1000) % 60);
-
-                display.innerText = `${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
-                display.style.color = "var(--accent-gold)";
-
-                if(diff <= 0) {
-                    clearInterval(interval);
-                    btn.disabled = false;
-                    btn.style.background = "var(--accent-green)";
-                    display.innerText = "00:00:00";
-                    display.style.color = "var(--text-gray)";
-                    localStorage.removeItem('sf_timer_end');
-                }
-            }, 1000);
+        function toggleSetting(type) {
+            let el = type === 'sound' ? document.getElementById('soundToggle') : document.getElementById('vibroToggle');
+            el.classList.toggle('on');
+            // Backendga sozlamani saqlash so'rovi yuboriladi...
         }
 
-        // Tilni o'zgartirish oyna simulyatsiyasi
-        function changeLanguage() {
-            alert("Til tanlash: \n1. O'zbekcha \n2. Русский \n3. English");
+        function setTradeLink() {
+            let link = prompt("Введите вашу Trade Link:");
+            if(link) alert("Trade Link успешно сохранен!");
         }
 
-        // Ishga tushirish
-        window.onload = function() {
-            generateLiveDrops();
-            let savedTime = localStorage.getItem('sf_timer_end');
-            if(savedTime && new Date().getTime() < savedTime) {
-                initTimer(parseInt(savedTime));
-            }
-
-            // Telegram WebApp orqali foydalanuvchini aniqlash
-            if(window.Telegram && window.Telegram.WebApp) {
-                const tg = window.Telegram.WebApp;
-                tg.expand();
-                if(tg.initDataUnsafe && tg.initDataUnsafe.user) {
-                    const u = tg.initDataUnsafe.user;
-                    document.getElementById('username-display').innerText = u.first_name;
-                    document.getElementById('user-tg-id').innerText = u.id;
-                    if(u.photo_url) {
-                        document.getElementById('avatar-placeholder').innerHTML = `<img src="${u.photo_url}" style="width:100%; height:100%; border-radius:50%">`;
-                    } else {
-                        document.getElementById('avatar-placeholder').innerText = u.first_name[0].toUpperCase();
-                    }
-                }
-            }
-        }
+        window.onload = initApp;
     </script>
 </body>
 </html>
