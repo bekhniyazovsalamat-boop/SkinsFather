@@ -3,306 +3,533 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SkinFights - Telegram WebApp</title>
+    <title>SkinsFather / SkinFights</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Rajdhani:wght@600;700&display=swap" rel="stylesheet">
+    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
     <style>
         :root {
-            --bg-color: #0b0e14;
-            --card-bg: #131a26;
+            --bg-color: #0d1117;
+            --panel-bg: #161b22;
+            --card-bg: #21262d;
             --accent-gold: #ffb703;
-            --text-color: #ffffff;
-            --text-gray: #8a96a8;
-            --purple-grad: linear-gradient(135deg, #4c1d95, #2563eb);
+            --accent-green: #2ea44f;
+            --text-main: #f0f6fc;
+            --text-gray: #8b949e;
+            --rarity-purple: linear-gradient(135deg, #8a2be2, #4a00e0);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', sans-serif;
         }
 
         body {
-            margin: 0;
-            padding: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: var(--bg-color);
-            color: var(--text-color);
-            padding-bottom: 80px;
-            user-select: none;
+            color: var(--text-main);
+            padding-bottom: 90px;
+            overflow-x: hidden;
+            -webkit-tap-highlight-color: transparent;
         }
 
-        /* Sahifalar boshqaruvi */
-        .page { display: none; padding: 15px; }
+        /* Sarlavhalar uchun maxsus o'yin shrifti */
+        h1, h2, h3, .balance-amount, .case-price {
+            font-family: 'Rajdhani', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .page { display: none; padding: 20px 15px; }
         .page.active { display: block; }
 
-        /* HEADER & BALANS */
-        .balance-card {
-            background: linear-gradient(135deg, #1e293b, #0f172a);
-            border: 2px solid var(--accent-gold);
+        /* REKLAMA / BANNER (Rasm 1 dagi yuqori qism) */
+        .hero-banner {
+            text-align: center;
+            padding: 25px 15px;
+            background: linear-gradient(180deg, rgba(46, 164, 79, 0.15) 0%, rgba(13, 17, 23, 0) 100%);
             border-radius: 20px;
+            margin-bottom: 20px;
+        }
+        .hero-banner h1 {
+            font-size: 32px;
+            color: var(--accent-green);
+            text-shadow: 0 0 15px rgba(46, 164, 79, 0.6);
+        }
+        .hero-banner p {
+            color: var(--text-gray);
+            font-size: 13px;
+            margin-top: 5px;
+        }
+
+        /* BALANS CARD */
+        .balance-box {
+            background: var(--panel-bg);
+            border: 1px solid rgba(255, 183, 3, 0.3);
+            border-radius: 16px;
             padding: 20px;
             text-align: center;
             margin-bottom: 20px;
-            box-shadow: 0 10px 25px rgba(255, 183, 3, 0.1);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
         }
-        .balance-title { color: var(--text-gray); font-size: 14px; text-transform: uppercase; }
-        .balance-amount { font-size: 36px; font-weight: bold; color: var(--accent-gold); margin: 10px 0; }
-        .balance-amount i { margin-right: 5px; }
-        
-        .btn-deposit {
-            background-color: var(--accent-gold);
-            color: #000;
+        .balance-title {
+            color: var(--text-gray);
+            font-size: 12px;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+        .balance-amount {
+            font-size: 38px;
+            color: var(--accent-gold);
+            margin: 8px 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-main {
+            background: var(--accent-green);
+            color: #fff;
             border: none;
-            padding: 12px 30px;
-            border-radius: 25px;
-            font-weight: bold;
-            font-size: 16px;
-            cursor: pointer;
             width: 100%;
-            transition: 0.2s;
+            padding: 14px;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 15px;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(46, 164, 79, 0.3);
+            transition: 0.2s ease;
+        }
+        .btn-main:active { transform: scale(0.98); }
+
+        /* VAZIFALAR VA BONUS */
+        .section-box {
+            background: var(--panel-bg);
+            border-radius: 16px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+        .section-box h3 {
+            font-size: 16px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
-        /* MODAL (Tolov tizimlari) */
-        .modal {
-            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.8); z-index: 1000; justify-content: center; align-items: center;
+        .btn-bonus {
+            background: #238636;
+            color: white;
+            border: none;
+            width: 100%;
+            padding: 12px;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
         }
-        .modal-content {
-            background: var(--card-bg); padding: 25px; border-radius: 20px; width: 85%; max-width: 400px; text-align: center;
-        }
-        .payment-method {
-            background: #1e293b; padding: 15px; margin: 10px 0; border-radius: 12px;
-            display: flex; justify-content: space-between; align-items: center; font-weight: bold; cursor: pointer;
+        .btn-bonus:disabled {
+            background: #21262d;
+            color: var(--text-gray);
+            cursor: not-allowed;
         }
 
-        /* BONUSTAR */
-        .bonus-section { background: var(--card-bg); padding: 15px; border-radius: 15px; margin-bottom: 15px; }
-        .btn-bonus { width: 100%; background: #22c55e; border: none; padding: 12px; color: white; border-radius: 10px; font-weight: bold; }
-        .btn-bonus:disabled { background: #475569; color: var(--text-gray); }
-
-        /* CASE PANELI (Rasm 2) */
-        .cases-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-        .case-card {
-            background: var(--card-bg); border-radius: 15px; overflow: hidden; text-align: center; padding: 15px;
-            border: 1px solid #1e293b; position: relative;
+        .task-item {
+            background: var(--card-bg);
+            padding: 12px 15px;
+            border-radius: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 14px;
+            cursor: pointer;
         }
-        .case-card img { width: 100%; max-height: 120px; object-fit: contain; }
-        .case-name { font-weight: bold; margin-top: 10px; }
-        .case-price { color: var(--accent-gold); font-size: 14px; margin-top: 5px; }
+
+        /* KEYSLAR RO'YXATI (Rasm 2 uchun toza skroll dizayn) */
+        .cases-title { font-size: 20px; margin-bottom: 15px; padding-left: 5px; }
+        .cases-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+        .case-item {
+            background: var(--panel-bg);
+            border-radius: 14px;
+            padding: 15px;
+            text-align: center;
+            border: 1px solid #30363d;
+            position: relative;
+        }
+        /* Haqiqiy yuklanadigan 3D SVG sandiqlar (Hech qachon o'chib ketmaydi) */
+        .case-icon-svg {
+            width: 70px;
+            height: 70px;
+            margin: 10px auto;
+            display: block;
+        }
+        .case-label-new {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: #da3637;
+            color: white;
+            font-size: 9px;
+            font-weight: 700;
+            padding: 2px 6px;
+            border-radius: 6px;
+            text-transform: uppercase;
+        }
+        .case-title-text {
+            font-weight: 600;
+            font-size: 15px;
+            margin-top: 8px;
+        }
+        .case-meta {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 8px;
+            font-size: 12px;
+        }
+        .badge-price {
+            background: rgba(255, 183, 3, 0.1);
+            color: var(--accent-gold);
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-weight: 600;
+        }
+        .badge-count {
+            background: rgba(139, 148, 158, 0.15);
+            color: var(--text-gray);
+            padding: 4px 8px;
+            border-radius: 6px;
+        }
 
         /* KEYS ICHIDAGI SKINLAR (Rasm 3) */
-        .skins-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 10px; }
-        .skin-card {
-            background: var(--purple-grad); padding: 10px; border-radius: 12px; text-align: center; font-size: 12px;
+        .skins-list {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-top: 15px;
         }
-        .skin-card img { width: 100%; height: auto; }
-
-        /* NAVIGATSIYA (PASTKI MENYU) */
-        .bottom-nav {
-            position: fixed; bottom: 0; left: 0; width: 100%; background: var(--card-bg);
-            display: flex; justify-content: space-around; padding: 12px 0; border-top: 1px solid #1e293b; box-shadow: 0 -5px 15px rgba(0,0,0,0.5);
+        .skin-item {
+            background: var(--panel-bg);
+            border-radius: 12px;
+            padding: 12px;
+            text-align: center;
+            border-bottom: 3px solid #8a2be2;
         }
-        .nav-item { color: var(--text-gray); text-align: center; text-decoration: none; font-size: 12px; cursor: pointer; flex: 1; }
-        .nav-item.active { color: var(--accent-gold); }
-        .nav-item i { font-size: 20px; display: block; margin-bottom: 4px; }
+        .skin-weapon-svg {
+            width: 65px;
+            height: 65px;
+            margin: 5px auto;
+        }
+        .skin-name { font-size: 13px; font-weight: 600; margin-top: 5px; color: #fff; }
+        .skin-condition { font-size: 10px; color: var(--text-gray); }
 
-        /* PROFIL */
-        .profile-header { text-align: center; padding: 20px 0; }
-        .profile-avatar { width: 80px; height: 80px; border-radius: 50%; border: 3px solid var(--accent-gold); }
+        /* PROFIL SAHIFASI (Rasm 3 dagi xatolar to'g'rilandi) */
+        .profile-container {
+            background: var(--panel-bg);
+            border-radius: 16px;
+            padding: 20px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .profile-avatar-wrap {
+            width: 76px;
+            height: 76px;
+            background: var(--card-bg);
+            border-radius: 50%;
+            margin: 0 auto 12px auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid var(--accent-green);
+            overflow: hidden;
+        }
+        .profile-avatar-wrap i { font-size: 32px; color: var(--text-gray); }
+        .profile-avatar-wrap img { width: 100%; height: 100%; object-fit: cover; }
+        
+        .profile-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 20px;
+            border-top: 1px solid #30363d;
+            padding-top: 15px;
+        }
+        .stat-val { font-size: 24px; font-weight: 700; color: var(--accent-gold); font-family: 'Rajdhani'; }
+        .stat-lbl { font-size: 11px; color: var(--text-gray); margin-top: 2px; }
+
+        /* POPUP MODAL (TO'LOV) */
+        .modal-overlay {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.85); z-index: 1000; justify-content: center; align-items: center;
+            padding: 20px;
+        }
+        .modal-body {
+            background: var(--panel-bg); border-radius: 20px; width: 100%; max-width: 340px; padding: 20px;
+            border: 1px solid #30363d; text-align: center;
+        }
+        .pay-card {
+            background: var(--card-bg); padding: 14px; margin: 10px 0; border-radius: 10px;
+            display: flex; justify-content: space-between; align-items: center; font-weight: 600; cursor: pointer;
+        }
+
+        /* NAVIGATSIYA MENU */
+        .nav-bar {
+            position: fixed; bottom: 0; left: 0; width: 100%; background: var(--panel-bg);
+            display: flex; border-top: 1px solid #30363d; padding: 10px 0; z-index: 999;
+        }
+        .nav-link {
+            flex: 1; text-align: center; color: var(--text-gray); font-size: 11px; font-weight: 600; text-decoration: none; cursor: pointer;
+        }
+        .nav-link.active { color: var(--accent-green); }
+        .nav-link i { font-size: 18px; display: block; margin-bottom: 4px; }
     </style>
 </head>
 <body>
 
-    <div id="home-page" class="page active">
-        <div class="balance-card">
-            <div class="balance-title">Sizning Balansingiz</div>
-            <div class="balance-amount"><i class="fa-solid fa-coins"></i> <span id="user-balance">463</span></div>
-            <button class="btn-deposit" onclick="openModal()">TANGALAR SOTIB OLISH</button>
+    <div id="home" class="page active">
+        <div class="hero-banner">
+            <h1>SKINFIGHTS</h1>
+            <p>Eng yaxshi dropni biz bilan qo'lga kiriting!</p>
         </div>
 
-        <div class="bonus-section">
-            <h3><i class="fa-solid fa-gift" style="color:red"></i> Kunlik Bonus</h3>
-            <button id="bonus-btn" class="btn-bonus" onclick="claimDailyBonus()">Bonusni olish (100 tanga)</button>
-            <p id="timer" style="text-align:center; font-weight:bold; color:var(--accent-gold); display:none;"></p>
+        <div class="balance-box">
+            <div class="balance-title">Sizning balansingiz</div>
+            <div class="balance-amount">
+                <i class="fa-solid fa-circle-dollar-to-slot"></i>
+                <span id="balance-num">463</span>
+            </div>
+            <button class="btn-main" onclick="toggleModal(true)">TANGALAR SOTIB OLISH</button>
         </div>
 
-        <div class="bonus-section">
-            <h3><i class="fa-solid fa-bell"></i> Vazifalar</h3>
-            <div class="payment-method" onclick="window.open('https://t.me/skinfights_bot')">
-                <span>Telegram kanalga a'zo bo'ling</span>
-                <span style="color:var(--accent-gold)">+50 tanga</span>
-            </div>
+        <div class="section-box">
+            <h3><i class="fa-solid fa-calendar-check" style="color:var(--accent-gold)"></i> Kunlik bonus</h3>
+            <button id="bonus-action" class="btn-bonus" onclick="getDailyBonus()">Bonusni olish (+100 tanga)</button>
+            <p id="countdown-timer" style="text-align:center; font-size:13px; font-weight:600; color:var(--accent-gold); margin-top:8px; display:none;"></p>
         </div>
-    </div>
 
-    <div id="games-page" class="page">
-        <h2 style="text-align:center">Keyslar do'koni</h2>
-        <div class="cases-grid">
-            <div class="case-card" onclick="openCaseView('Glow Case')">
-                <img src="https://community.cloudflare.steamstatic.com/public/images/economy/community/case_shattered_web.png" alt="Case">
-                <div class="case-name">Glow Case</div>
-                <div class="case-price"><i class="fa-solid fa-coins"></i> 500</div>
-            </div>
-            <div class="case-card" onclick="openCaseView('Tundra Case')">
-                <img src="https://community.cloudflare.steamstatic.com/public/images/economy/community/case_fracture.png" alt="Case">
-                <div class="case-name">Tundra Case</div>
-                <div class="case-price"><i class="fa-solid fa-coins"></i> 750</div>
-            </div>
-            <div class="case-card" onclick="openCaseView('Ember Case')">
-                <img src="https://community.cloudflare.steamstatic.com/public/images/economy/community/case_clutch.png" alt="Case">
-                <div class="case-name">Ember Case</div>
-                <div class="case-price"><i class="fa-solid fa-coins"></i> 1,500</div>
-            </div>
-            <div class="case-card" onclick="openCaseView('Namangan Case')">
-                <img src="https://community.cloudflare.steamstatic.com/public/images/economy/community/case_cs2_weapon_case_3.png" alt="Case">
-                <div class="case-name">Namangan Case</div>
-                <div class="case-price"><i class="fa-solid fa-coins"></i> 2,000</div>
+        <div class="section-box">
+            <h3><i class="fa-solid fa-tasks"></i> Vazifalar</h3>
+            <div class="task-item" onclick="window.open('https://t.me/skinfights_bot')">
+                <span>Rasmiy kanalga obuna bo'lish</span>
+                <span style="color:var(--accent-gold); font-weight:600;">+500 🪙</span>
             </div>
         </div>
     </div>
 
-    <div id="case-view-page" class="page">
-        <button onclick="switchPage('games-page')" style="background:none; border:none; color:white; font-size:16px;"><i class="fa-solid fa-arrow-left"></i> Orqaga</button>
-        <h2 id="current-case-title" style="text-align:center">Keys ichi</h2>
-        <div class="skins-grid" id="skins-container">
+    <div id="cases" class="page">
+        <h2 class="cases-title">Mavjud Keyslar</h2>
+        <div class="cases-container" id="cases-list-dom">
             </div>
     </div>
 
-    <div id="inventory-page" class="page">
-        <h2 style="text-align:center">Sizning skinlaringiz</h2>
-        <p style="color:var(--text-gray); text-align:center">Hozircha inventar bo'sh. Keys ochib skin yutib oling!</p>
+    <div id="case-detail" class="page">
+        <span onclick="goBackToCases()" style="cursor:pointer; color:var(--text-gray); font-size:14px;"><i class="fa-solid fa-chevron-left"></i> Orqaga qaytish</span>
+        <h2 id="detail-title" style="margin: 15px 0 5px 0;">Keys tarkibi</h2>
+        <div class="skins-list" id="skins-list-dom"></div>
     </div>
 
-    <div id="profile-page" class="page">
-        <div class="profile-header">
-            <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" class="profile-avatar" id="tg-avatar">
-            <h3 id="tg-name">Telegram Foydalanuvchi</h3>
-            <p style="color:var(--text-gray)">ID: <span id="tg-id">Olinmoqda...</span></p>
-        </div>
-        <div class="bonus-section">
-            <div style="display:flex; justify-content:space-between; margin-bottom:10px;">
-                <span>Ochilgan keyslar soni:</span>
-                <span style="font-weight:bold; color:var(--accent-gold)">14 ta</span>
-            </div>
-            <div style="display:flex; justify-content:space-between;">
-                <span>Eng qimmat yutuq:</span>
-                <span style="font-weight:bold; color:#22c55e">AWP | Asiimov</span>
-            </div>
+    <div id="inventory" class="page">
+        <h2 class="cases-title">Sizning Inventaringiz</h2>
+        <div style="text-align:center; padding:40px 10px; color:var(--text-gray);">
+            <i class="fa-solid fa-box-open" style="font-size:48px; margin-bottom:15px; opacity:0.3;"></i>
+            <p>Sizda hozircha skinlar mavjud emas. Keys ochib yutib oling!</p>
         </div>
     </div>
 
-    <div id="payment-modal" class="modal">
-        <div class="modal-content">
-            <h3>To'lov tizimini tanlang</h3>
-            <div class="payment-method" onclick="alert('Humo orqali tolov tizimiga otish...')">
-                <span>HUMO</span> <i class="fa-solid fa-credit-card" style="color:#2563eb"></i>
+    <div id="profile" class="page">
+        <h2 class="cases-title">O'yinchi Profili</h2>
+        <div class="profile-container">
+            <div class="profile-avatar-wrap" id="user-avatar-container">
+                <i class="fa-solid fa-user"></i>
             </div>
-            <div class="payment-method" onclick="alert('Uzcard orqali tolov tizimiga otish...')">
-                <span>UZCARD</span> <i class="fa-solid fa-credit-card" style="color:#0ea5e9"></i>
+            <h3 id="user-display-name" style="font-size:18px; color:#fff;">Foydalanuvchi</h3>
+            
+            <div class="profile-stats">
+                <div>
+                    <div class="stat-val" id="stats-opened-count">0</div>
+                    <div class="stat-lbl">Keyslar ochilgan</div>
+                </div>
+                <div>
+                    <div class="stat-val" style="color:var(--accent-green)">Elite</div>
+                    <div class="stat-lbl">Sizning Rangiz</div>
+                </div>
             </div>
-            <button onclick="closeModal()" style="margin-top:15px; background:none; border:none; color:var(--text-gray); font-weight:bold;">Yopish</button>
+            <div style="font-size:11px; color:var(--text-gray); margin-top:15px; border-top:1px dashed #30363d; padding-top:10px;">
+                Telegram ID: <span id="user-telegram-id">Yuklanmoqda...</span>
+            </div>
         </div>
     </div>
 
-    <div class="bottom-nav">
-        <div class="nav-item active" onclick="switchPage('home-page', this)"><i class="fa-solid fa-house"></i>Asosiy</div>
-        <div class="nav-item" onclick="switchPage('games-page', this)"><i class="fa-solid fa-dice"></i>O'yinlar</div>
-        <div class="nav-item" onclick="switchPage('inventory-page', this)"><i class="fa-solid fa-briefcase"></i>Inventar</div>
-        <div class="nav-item" onclick="switchPage('profile-page', this)"><i class="fa-solid fa-user"></i>Profil</div>
+    <div id="pay-modal" class="modal-overlay">
+        <div class="modal-body">
+            <h3 style="margin-bottom:15px;">Hisobni to'ldirish</h3>
+            <div class="pay-card" onclick="alert('Humo tizimiga o\'tilmoqda...')">
+                <span>HUMO Kartalari</span> <i class="fa-solid fa-money-check-dollar" style="color:#00a8ff"></i>
+            </div>
+            <div class="pay-card" onclick="alert('Uzcard tizimiga o\'tilmoqda...')">
+                <span>UZCARD Kartalari</span> <i class="fa-solid fa-credit-card" style="color:#00a8ff"></i>
+            </div>
+            <span onclick="toggleModal(false)" style="display:inline-block; margin-top:15px; font-size:13px; color:var(--text-gray); cursor:pointer; font-weight:600;">Yopish</span>
+        </div>
+    </div>
+
+    <div class="nav-bar">
+        <div class="nav-link active" onclick="navigateTo('home', this)"><i class="fa-solid fa-square-poll-vertical"></i>Asosiy</div>
+        <div class="nav-link" onclick="navigateTo('cases', this)"><i class="fa-solid fa-cubes"></i>Keyslar</div>
+        <div class="nav-link" onclick="navigateTo('inventory', this)"><i class="fa-solid fa-briefcase"></i>Inventar</div>
+        <div class="nav-link" onclick="navigateTo('profile', this)"><i class="fa-solid fa-circle-user"></i>Profil</div>
     </div>
 
     <script>
-        // Sahifani almashtirish funksiyasi
-        function switchPage(pageId, element) {
-            document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
-            document.getElementById(pageId).classList.add('active');
-            
-            if(element) {
-                document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
-                element.classList.add('active');
+        // 1. CHUNCHAKI XATO BERMAYDIGAN SVG RANGLI TASVIRLI SARIQLAR VA SKINLAR RO'YXATI
+        const keySandiqlar = [
+            { id: 'grunt', name: 'Grunt Case', price: 500, opens: '14.7M', isNew: false, color: '#e67e22' },
+            { id: 'tundra', name: 'Tundra Case', price: 750, opens: '1.2M', isNew: true, color: '#3498db' },
+            { id: 'lurk', name: 'Lurk Case', price: 1500, opens: '2.1M', isNew: false, color: '#2ecc71' },
+            { id: 'namangan', name: 'Namangan Case', price: 2000, opens: '573.1k', isNew: false, color: '#f1c40f' }
+        ];
+
+        const skinMaorif = [
+            { name: "Desert Eagle | Discipline", rate: "0.46%", price: "43 132", badge: "FN" },
+            { name: "Desert Eagle | Corinthian", rate: "0.48%", price: "42 340", badge: "MW" },
+            { name: "Desert Eagle | Light Rail", rate: "1.63%", price: "24 292", badge: "FT" },
+            { name: "Desert Eagle | Oxide Blaze", rate: "2.60%", price: "17 317", badge: "BS" }
+        ];
+
+        // 3D vektorli sandiq rasmi (hech qachon o'chib ketmaydi)
+        function getSvgBox(color) {
+            return `<svg class="case-icon-svg" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M6 22L32 10L58 22L32 34L6 22Z" fill="${color}" stroke="#fff" stroke-width="2"/>
+                <path d="M6 22V44L32 56V34L6 22Z" fill="${color}" opacity="0.8" stroke="#fff" stroke-width="2"/>
+                <path d="M58 22V44L32 56V34L58 22Z" fill="${color}" opacity="0.6" stroke="#fff" stroke-width="2"/>
+                <circle cx="32" cy="34" r="4" fill="#ffb703"/>
+            </svg>`;
+        }
+
+        // Qurol tasviri uchun ishonchli vektor
+        function getWeaponSvg() {
+            return `<svg class="skin-weapon-svg" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M10 35H25L50 20H58V28L48 32V40H42L38 35H10V35Z" fill="#8b949e" stroke="#fff" stroke-width="2"/>
+                <path d="M20 35V45H15V35H20Z" fill="#ffb703"/>
+            </svg>`;
+        }
+
+        // Sahifalarni navigatsiya qilish
+        function navigateTo(id, currentEl) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+            if(currentEl) {
+                document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+                currentEl.classList.add('active');
             }
         }
 
-        // Modal oynani ochish/yopish
-        function openModal() { document.getElementById('payment-modal').style.display = 'flex'; }
-        function closeModal() { document.getElementById('payment-modal').style.display = 'none'; }
-
-        // Kunlik bonus taymeri (24 soat)
-        function claimDailyBonus() {
-            let balance = parseInt(document.getElementById('user-balance').innerText);
-            balance += 100;
-            document.getElementById('user-balance').innerText = balance;
-
-            let endTime = new Date().getTime() + 24 * 60 * 60 * 1000;
-            localStorage.setItem('bonus_timer', endTime);
-            startTimer(endTime);
+        // Keyslar ro'yxatini shakllantirish
+        function initCases() {
+            const listDom = document.getElementById('cases-list-dom');
+            listDom.innerHTML = '';
+            keySandiqlar.forEach(item => {
+                listDom.innerHTML += `
+                    <div class="case-item" onclick="showCaseDetail('${item.name}')">
+                        ${item.isNew ? '<div class="case-label-new">New!</div>' : ''}
+                        ${getSvgBox(item.color)}
+                        <div class="case-title-text">${item.name}</div>
+                        <div class="case-meta">
+                            <span class="badge-price">🪙 ${item.price}</span>
+                            <span class="badge-count">📦 ${item.opens}</span>
+                        </div>
+                    </div>
+                `;
+            });
         }
 
-        function startTimer(endTime) {
-            const btn = document.getElementById('bonus-btn');
-            const timerDisplay = document.getElementById('timer');
+        function showCaseDetail(title) {
+            document.getElementById('detail-title').innerText = title;
+            const container = document.getElementById('skins-list-dom');
+            container.innerHTML = '';
+            skinMaorif.forEach(skin => {
+                container.innerHTML += `
+                    <div class="skin-item">
+                        <div style="display:flex; justify-content:space-between; font-size:10px; color:var(--accent-gold)">
+                            <span>${skin.badge}</span><span>${skin.rate}</span>
+                        </div>
+                        ${getWeaponSvg()}
+                        <div class="skin-name">${skin.name}</div>
+                        <div style="font-size:12px; color:var(--accent-gold); margin-top:5px;">🪙 ${skin.price}</div>
+                    </div>
+                `;
+            });
+            navigateTo('case-detail');
+        }
+
+        function goBackToCases() { navigateTo('cases'); }
+        function toggleModal(show) { document.getElementById('pay-modal').style.display = show ? 'flex' : 'none'; }
+
+        // KUNLIK BONUS VA TAYMER LOGIKASI
+        function getDailyBonus() {
+            let b = parseInt(document.getElementById('balance-num').innerText);
+            document.getElementById('balance-num').innerText = b + 100;
+            let end = new Date().getTime() + 24 * 60 * 60 * 1000;
+            localStorage.setItem('sf_bonus_time', end);
+            runTimer(end);
+        }
+
+        function runTimer(endTime) {
+            const btn = document.getElementById('bonus-action');
+            const tmr = document.getElementById('countdown-timer');
             btn.disabled = true;
-            timerDisplay.style.display = 'block';
+            tmr.style.display = 'block';
 
-            let x = setInterval(function() {
-                let now = new Date().getTime();
-                let distance = endTime - now;
+            let tint = setInterval(() => {
+                let diff = endTime - new Date().getTime();
+                let h = Math.floor((diff / (1000 * 60 * 60)) % 24);
+                let m = Math.floor((diff / (1000 * 60)) % 60);
+                let s = Math.floor((diff / 1000) % 60);
 
-                let hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                let minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-                let seconds = Math.floor((distance % (1000 * 60)) / 1000);
+                tmr.innerText = `Keyingi bonusga: ${h}soat ${m}daqiqa ${s}soniya qoldi`;
 
-                timerDisplay.innerHTML = `Yangi bonusga: ${hours}soat ${minutes}daqiqa ${seconds}soniya`;
-
-                if (distance < 0) {
-                    clearInterval(x);
+                if(diff <= 0) {
+                    clearInterval(tint);
                     btn.disabled = false;
-                    timerDisplay.style.display = 'none';
-                    localStorage.removeItem('bonus_timer');
+                    tmr.style.display = 'none';
+                    localStorage.removeItem('sf_bonus_time');
                 }
             }, 1000);
         }
 
-        // Sahifa yuklanganda taymerni tekshirish
+        // TELEGRAM INTEGRATSIYASI (XATOLIKLAR BARTARAF ETILDI)
         window.onload = function() {
-            let savedTimer = localStorage.getItem('bonus_timer');
-            if (savedTimer && new Date().getTime() < savedTimer) {
-                startTimer(parseInt(savedTimer));
+            initCases();
+            let saved = localStorage.getItem('sf_bonus_time');
+            if(saved && new Date().getTime() < saved) {
+                runTimer(parseInt(saved));
             }
-            
-            // Telegram foydalanuvchi ma'lumotlarini olish (Telegram WebApp ichida ishlaydi)
+
             if (window.Telegram && window.Telegram.WebApp) {
-                const tg = window.Telegram.WebApp;
-                tg.expand(); // Ekran kengaytirish
-                if(tg.initDataUnsafe && tg.initDataUnsafe.user) {
-                    document.getElementById('tg-name').innerText = tg.initDataUnsafe.user.first_name;
-                    document.getElementById('tg-id').innerText = tg.initDataUnsafe.user.id;
-                    if(tg.initDataUnsafe.user.photo_url) {
-                        document.getElementById('tg-avatar').src = tg.initDataUnsafe.user.photo_url;
+                const webapp = window.Telegram.WebApp;
+                webapp.expand();
+                if (webapp.initDataUnsafe && webapp.initDataUnsafe.user) {
+                    const u = webapp.initDataUnsafe.user;
+                    document.getElementById('user-display-name').innerText = (u.first_name + ' ' + (u.last_name || '')).trim();
+                    document.getElementById('user-telegram-id').innerText = u.id;
+                    if (u.photo_url) {
+                        document.getElementById('user-avatar-container').innerHTML = `<img src="${u.photo_url}" alt="Avatar">`;
                     }
+                } else {
+                    // Agar brauzerda test qilinayotgan bo'lsa demo rejim
+                    document.getElementById('user-telegram-id').innerText = "5498016172";
+                    document.getElementById('user-display-name').innerText = "SkinsFather Admin";
                 }
             }
-        };
-
-        // Keys ichidagi qurol/skinlar API ro'yxati (Steam rasmlari bilan)
-        const fakeSkins = [
-            { name: "Desert Eagle | Trigger Discipline", price: "43 132", rate: "0.46%", img: "https://community.cloudflare.steamstatic.com/public/images/economy/community/5e201b7a956165e3cf70984a9e9c321d.png" },
-            { name: "Desert Eagle | Corinthian", price: "42 340", rate: "0.48%", img: "https://community.cloudflare.steamstatic.com/public/images/economy/community/8ee42fbdcf0f182c610b2df76fc87e83.png" },
-            { name: "Desert Eagle | Light Rail", price: "24 292", rate: "1.63%", img: "https://community.cloudflare.steamstatic.com/public/images/economy/community/c2a2cd2cd80da6a8d8719bc42bb6a9d7.png" },
-            { name: "Desert Eagle | Oxide Blaze", price: "17 317", rate: "2.6%", img: "https://community.cloudflare.steamstatic.com/public/images/economy/community/2e6cfba1e31d3d63b2f6ef5391c7a8b9.png" }
-        ];
-
-        function openCaseView(caseName) {
-            document.getElementById('current-case-title').innerText = caseName;
-            const container = document.getElementById('skins-container');
-            container.innerHTML = ''; // tozalash
-
-            fakeSkins.forEach(skin => {
-                container.innerHTML += `
-                    <div class="skin-card">
-                        <span style="background:rgba(0,0,0,0.4); padding:2px 5px; border-radius:5px; font-size:10px; float:right;">${skin.rate}</span>
-                        <div style="clear:both"></div>
-                        <img src="${skin.img}" alt="skin">
-                        <div style="font-weight:bold; margin-top:5px; min-height:32px;">${skin.name}</div>
-                        <div style="color:var(--accent-gold); margin-top:5px;"><i class="fa-solid fa-coins"></i> ${skin.price}</div>
-                    </div>
-                `;
-            });
-            switchPage('case-view-page');
         }
     </script>
 </body>
