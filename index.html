@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SkinsFather Mini App</title>
+    <style>
+        /* CS2 uslubidagi qora-to'q rangli fon */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #0b0e14;
+            color: #ffffff;
+            margin: 0;
+            padding: 15px;
+            text-align: center;
+            -webkit-user-select: none;
+        }
+
+        /* Tepada aylanadigan skinlar lentasi simulyatsiyasi */
+        .skin-carousel {
+            display: flex;
+            gap: 10px;
+            overflow-x: auto;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            margin-bottom: 20px;
+        }
+
+        .skin-card {
+            min-width: 80px;
+            background: #151a24;
+            padding: 10px;
+            border-radius: 8px;
+            border-bottom: 3px solid #7026b9; /* Binafsha rangli skin */
+            font-size: 11px;
+        }
+
+        .skin-card img {
+            width: 50px;
+            height: auto;
+        }
+
+        /* Balans qismi */
+        .header-status {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 5px;
+            margin-bottom: 25px;
+        }
+
+        .online-count {
+            color: #00ff88;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .balance-badge {
+            background: #1c2430;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            border: 1px solid #2c3747;
+        }
+
+        .balance-badge span {
+            color: #ffd700;
+        }
+
+        /* Topshiriqlar (Задания) qismi */
+        .section-title {
+            text-align: left;
+            font-size: 18px;
+            margin-bottom: 15px;
+            font-weight: bold;
+            padding-left: 5px;
+        }
+
+        .task-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .task-item {
+            background: #151a24;
+            padding: 15px;
+            border-radius: 14px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            text-align: left;
+            border: 1px solid rgba(255, 255, 255, 0.02);
+        }
+
+        .task-info h4 {
+            margin: 0 0 5px 0;
+            font-size: 15px;
+        }
+
+        .task-info p {
+            margin: 0;
+            font-size: 12px;
+            color: #8a96a8;
+        }
+
+        .task-btn {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 13px;
+            box-shadow: 0 4px 10px rgba(0, 123, 255, 0.3);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 1. Tepada aylanadigan skinlar lentasi -->
+    <div class="skin-carousel">
+        <div class="skin-card">🔑<br>Case</div>
+        <div class="skin-card">🔫<br>AK-47</div>
+        <div class="skin-card">🎯<br>AWP</div>
+        <div class="skin-card">🔪<br>Knife</div>
+        <div class="skin-card">🔫<br>M4A4</div>
+        <div class="skin-card">⚡<br>Glock</div>
+    </div>
+
+    <!-- 2. Online va Balans statusi -->
+    <div class="header-status">
+        <div class="online-count">● online 742</div>
+        <div class="balance-badge">🪙 <span>110</span></div>
+    </div>
+
+    <!-- 3. Topshiriqlar ro'yxati -->
+    <div class="section-title">Задания</div>
+    
+    <div class="task-list">
+        <div class="task-item">
+            <div class="task-info">
+                <h4>Имя бота в фамилии</h4>
+                <p>0/10 День • Макс +230 🪙</p>
+            </div>
+            <button class="task-btn" onclick="alert('Выполняется...')">+50</button>
+        </div>
+
+        <div class="task-item">
+            <div class="task-info">
+                <h4>Реф. ссылка в описании</h4>
+                <p>0/10 День • Макс +200 🪙</p>
+            </div>
+            <button class="task-btn" onclick="alert('Выполняется...')">+20</button>
+        </div>
+
+        <div class="task-item">
+            <div class="task-info">
+                <h4>Пригласи друга</h4>
+                <p>2/10 друзей • За 10-го +4 000 🪙</p>
+            </div>
+            <button class="task-btn" style="background: #00ff88; color: black;">Друзья</button>
+        </div>
+    </div>
+
+</body>
+</html>
